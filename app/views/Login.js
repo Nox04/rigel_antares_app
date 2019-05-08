@@ -60,7 +60,7 @@ export default class Login extends Component {
               keyboardType="phone-pad"
               onSubmitEditing={() => { this.secondTextInput.focus(); }}
               returnKeyType="next"
-              onChange = {(event,newValue) => this.setState({phone:newValue})}
+              onChangeText = {value => this.setState({phone:value})}
               maxLength={12}
               blurOnSubmit={false}
               placeholderTextColor={Colors.Textbox.color}
@@ -85,7 +85,7 @@ export default class Login extends Component {
               autoCorrect={false}
               maxLength={4}
               keyboardType="number-pad"
-              onChange = {(event,newValue) => this.setState({pin:newValue})}
+              onChangeText = {value => this.setState({pin:value})}
               returnKeyType="done"
               blurOnSubmit={true}
               placeholderTextColor={Colors.Textbox.color}
@@ -115,17 +115,20 @@ export default class Login extends Component {
     );
   }
   handleClick(event) {
+    console.log(this.state);
     axios.post('https://antares.rigel.digital/api/mauth/login/', {
       phone: this.state.phone,
       pin: this.state.pin
     })
-    .then(res => console.log(res.data))
-    .catch(error => console.log(error));
-    
-    this.setState({
+    .then(res => {
+      console.log(res.data)
+      this.setState({
         phone: '',
         pin: ''
-    });
+      });
+      this.props.navigation.navigate('HomePage');
+    })
+    .catch(error => console.log(error));
   }
 }
 
