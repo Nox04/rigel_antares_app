@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Input, Button, Icon } from 'react-native-elements';
 import Colors from '../modules/Colors';
+import axios from 'axios';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -19,6 +20,13 @@ const BG_IMAGE = require('../assets/images/bg_screen.png');
 const LOGO = require('../assets/images/logo.png');
 
 export default class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      phone:'',
+      pin:''
+    }
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -52,6 +60,7 @@ export default class Login extends Component {
               keyboardType="phone-pad"
               onSubmitEditing={() => { this.secondTextInput.focus(); }}
               returnKeyType="next"
+              onChange = {(event,newValue) => this.setState({phone:newValue})}
               maxLength={12}
               blurOnSubmit={false}
               placeholderTextColor={Colors.Textbox.color}
@@ -76,6 +85,7 @@ export default class Login extends Component {
               autoCorrect={false}
               maxLength={4}
               keyboardType="number-pad"
+              onChange = {(event,newValue) => this.setState({pin:newValue})}
               returnKeyType="done"
               blurOnSubmit={true}
               placeholderTextColor={Colors.Textbox.color}
@@ -95,7 +105,7 @@ export default class Login extends Component {
             }}
             containerStyle={{ marginVertical: 10 }}
             titleStyle={{ fontWeight: 'bold', color: Colors.Button.text }}
-            onPress={() => this.props.navigation.navigate('HomePage')}
+            onPress={(event) => this.handleClick(event)}
             />
             <View style={styles.footerView}>
             </View>
@@ -103,6 +113,19 @@ export default class Login extends Component {
         </ImageBackground>
       </View>
     );
+  }
+  handleClick(event) {
+    axios.post('https://antares.rigel.digital/api/mauth/login/', {
+      phone: this.state.phone,
+      pin: this.state.pin
+    })
+    .then(res => console.log(res.data))
+    .catch(error => console.log(error));
+    
+    this.setState({
+        phone: '',
+        pin: ''
+    });
   }
 }
 
