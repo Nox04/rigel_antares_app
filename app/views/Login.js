@@ -5,7 +5,8 @@ import {
   View,
   ImageBackground,
   Dimensions,
-  StatusBar
+  StatusBar,
+  Image
 } from 'react-native';
 import { Input, Button, Icon } from 'react-native-elements';
 import Colors from '../modules/Colors';
@@ -14,7 +15,8 @@ import Colors from '../modules/Colors';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-const BG_IMAGE = require('../assets/images/bg_screen.jpg');
+const BG_IMAGE = require('../assets/images/bg_screen.png');
+const LOGO = require('../assets/images/logo.png');
 
 export default class Login extends Component {
   render() {
@@ -28,7 +30,6 @@ export default class Login extends Component {
           <View style={styles.loginView}>
             <View style={styles.loginTitle}>
             <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.titleText}>Antares</Text>
             </View>
           </View>
           <View style={styles.loginInput}>
@@ -128,6 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: -100
   },
   titleText: {
     color: Colors.Title.color,

@@ -1,4 +1,4 @@
-const SECONDARY = 'white';
+const SECONDARY = '#f0f3fe';
 const Colors = {
     Button: {
         background: 'transparent',
@@ -10,7 +10,7 @@ const Colors = {
         icon: SECONDARY
     },
     StatusBar: {
-        color: '#314F85'
+        color: '#010101'
     },
     Title: {
         color: SECONDARY
