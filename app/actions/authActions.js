@@ -7,6 +7,8 @@ import {
   LOGOUT,
   LOGIN,
   SET_TOKEN,
+  HIDE_LOADING,
+  SHOW_LOADING
 } from './types';
 
 const setToken = async token => {
@@ -33,9 +35,13 @@ const getToken = async () => {
 }
 
 export const login = data => async dispatch => {
+  dispatch({
+    type: SHOW_LOADING
+  });
   await axios.post(`${BASE_URL}/mauth/login`, data)
     .then( ({data, headers}) => {
       setToken(headers.authorization);
+      
       dispatch({
         type: LOGIN,
         payload: data.user
@@ -43,6 +49,11 @@ export const login = data => async dispatch => {
     })
     .catch(error => {
       console.log(error);
+    })
+    .then(() => {
+      dispatch({
+        type: HIDE_LOADING
+      });
     });
 };
 
@@ -56,5 +67,10 @@ export const logout = () => async dispatch => {
     })
     .catch(error => {
       console.log(error);
+    })
+    .then(() => {
+      dispatch({
+        type: HIDE_LOADING
+      });
     });
 };

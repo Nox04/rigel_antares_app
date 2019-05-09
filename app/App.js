@@ -4,9 +4,6 @@ import {StyleSheet} from 'react-native';
 import {Provider} from 'react-redux';
 import store from './store';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {connect} from 'react-redux';
-import {showLoading, hideLoading} from './actions/baseActions';
-
 
 import Login from './views/Login';
 import Home from './views/Home';
@@ -19,11 +16,24 @@ const MainNavigator = createStackNavigator({
 let Navigation = createAppContainer(MainNavigator);
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: false
+    }
+  }
+
+  componentDidMount() {
+    store.subscribe(() => {
+      this.setState({isLoading: store.getState().base.isLoading});
+    });
+  }
+
   render() {
     return (
       <Provider store={store}>
         <Spinner
-          visible={store.getState().base.isLoading}
+          visible={this.state.isLoading}
           textContent={'Cargando...'}
           textStyle={styles.spinnerTextStyle}
           overlayColor = {'rgba(0, 0, 0, 0.85)'}

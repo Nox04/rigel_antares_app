@@ -8,6 +8,7 @@ const preloadedState = {
 export default (state = preloadedState, {type}) => {
   switch(type) {
     case SHOW_LOADING:
+    console.log('llegando');
       return {
         isLoading: true
       };
