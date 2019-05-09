@@ -11,34 +11,17 @@ import {
 import { Input, Button, Icon } from 'react-native-elements';
 import Geolocation from 'react-native-geolocation-service';
 import {connect} from 'react-redux';
+import {setPermission, setGPS} from '../actions/locationActions';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-
 const BG_IMAGE = require('../assets/images/main.jpg');
 
 class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      hasLocationPermission: true,
-      latitude: 0,
-      longitude: 0
-    }
-  }
+
   componentDidMount() {
     this.requestLocationPermission().then( () => {
-      if (this.state.hasLocationPermission) {
-        Geolocation.watchPosition(
-          (position) => {
-            this.setState({latitude:position.coords.latitude, longitude: position.coords.longitude});
-          },
-          (error) => {
-            console.log(error.code, error.message);
-          },
-          { enableHighAccuracy: true, distanceFilter: 10}
-        );
-      }
+      this.props.setGPS();
     });
   }
 
@@ -50,16 +33,14 @@ class Home extends Component {
       ]).then(result => {
         if (result['android.permission.ACCESS_COARSE_LOCATION']
             && result['android.permission.ACCESS_FINE_LOCATION']) {
-              this.setState({
-                hasLocationPermission: true
-              });
+              this.props.setPermission(true);
             }
       })
       .catch(error => {
-        console.log(error);
+        this.props.setPermission(false);
       });
     } catch (err) {
-      console.warn(err);
+      this.props.setPermission(false);
     }
   } 
 
@@ -78,7 +59,7 @@ class Home extends Component {
                 
               </View>
               <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.travelText}>{`${this.state.latitude} - ${this.state.longitude}`}</Text>
+                <Text style={styles.travelText}>{`${this.props.location.latitude} - ${this.props.location.longitude}`}</Text>
               </View>
             </View>
           </View>
@@ -114,7 +95,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
+  location: state.location
 });
 
-export default connect(mapStateToProps) (Home);
+export default connect(mapStateToProps, {setPermission, setGPS}) (Home);
