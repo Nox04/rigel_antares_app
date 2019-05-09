@@ -14,7 +14,7 @@ import Geolocation from 'react-native-geolocation-service';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-const BG_IMAGE = require('../assets/images/bg_screen.jpg');
+const BG_IMAGE = require('../assets/images/main.jpg');
 
 export default class Home extends Component {
   constructor(props) {
