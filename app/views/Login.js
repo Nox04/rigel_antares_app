@@ -6,11 +6,15 @@ import {
   ImageBackground,
   Dimensions,
   StatusBar,
-  Image
+  Image,
+  PermissionsAndroid
 } from 'react-native';
 import { Input, Button, Icon } from 'react-native-elements';
 import Colors from '../modules/Colors';
 import axios from 'axios';
+import Geolocation from 'react-native-geolocation-service';
+import {connect} from 'react-redux';
+import {login} from '../actions/authActions';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -19,14 +23,53 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 const BG_IMAGE = require('../assets/images/bg_screen.png');
 const LOGO = require('../assets/images/logo.png');
 
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       phone:'',
-      pin:''
+      pin:'',
+      hasLocationPermission: true
     }
   }
+
+  componentDidMount() {
+    this.requestLocationPermission().then( () => {
+      if (this.state.hasLocationPermission) {
+        Geolocation.watchPosition(
+            (position) => {
+                console.log(position);
+            },
+            (error) => {
+                console.log(error.code, error.message);
+            },
+            { enableHighAccuracy: true}
+        );
+      }
+    });
+  }
+
+  async requestLocationPermission() {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION
+      ]).then(result => {
+        if (result['android.permission.ACCESS_COARSE_LOCATION']
+            && result['android.permission.ACCESS_FINE_LOCATION']) {
+              this.setState({
+                hasLocationPermission: true
+              });
+            }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    } catch (err) {
+      console.warn(err);
+    }
+  } 
+
   render() {
     return (
       <View style={styles.container}>
@@ -115,20 +158,12 @@ export default class Login extends Component {
     );
   }
   handleClick(event) {
-    console.log(this.state);
-    axios.post('https://antares.rigel.digital/api/mauth/login/', {
+    this.props.login({
       phone: this.state.phone,
       pin: this.state.pin
-    })
-    .then(res => {
-      console.log(res.data)
-      this.setState({
-        phone: '',
-        pin: ''
-      });
+    }).then(() => {
       this.props.navigation.navigate('HomePage');
-    })
-    .catch(error => console.log(error));
+    });
   }
 }
 
@@ -174,3 +209,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps, {login}) (Login);
