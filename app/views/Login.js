@@ -6,13 +6,10 @@ import {
   ImageBackground,
   Dimensions,
   StatusBar,
-  Image,
-  PermissionsAndroid
+  Image
 } from 'react-native';
 import { Input, Button, Icon } from 'react-native-elements';
 import Colors from '../modules/Colors';
-import axios from 'axios';
-import Geolocation from 'react-native-geolocation-service';
 import {connect} from 'react-redux';
 import {login} from '../actions/authActions';
 
@@ -21,54 +18,15 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 const BG_IMAGE = require('../assets/images/bg_screen.png');
-const LOGO = require('../assets/images/logo.png');
 
 class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       phone:'',
-      pin:'',
-      hasLocationPermission: true
+      pin:''
     }
   }
-
-  componentDidMount() {
-    this.requestLocationPermission().then( () => {
-      if (this.state.hasLocationPermission) {
-        Geolocation.watchPosition(
-            (position) => {
-                console.log(position);
-            },
-            (error) => {
-                console.log(error.code, error.message);
-            },
-            { enableHighAccuracy: true}
-        );
-      }
-    });
-  }
-
-  async requestLocationPermission() {
-    try {
-      const granted = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION
-      ]).then(result => {
-        if (result['android.permission.ACCESS_COARSE_LOCATION']
-            && result['android.permission.ACCESS_FINE_LOCATION']) {
-              this.setState({
-                hasLocationPermission: true
-              });
-            }
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    } catch (err) {
-      console.warn(err);
-    }
-  } 
 
   render() {
     return (

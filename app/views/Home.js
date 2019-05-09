@@ -5,10 +5,11 @@ import {
   View,
   ImageBackground,
   Dimensions,
-  StatusBar
+  StatusBar,
+  PermissionsAndroid
 } from 'react-native';
 import { Input, Button, Icon } from 'react-native-elements';
-
+import Geolocation from 'react-native-geolocation-service';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -16,6 +17,49 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 const BG_IMAGE = require('../assets/images/bg_screen.jpg');
 
 export default class Home extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hasLocationPermission: true
+    }
+  }
+  componentDidMount() {
+    this.requestLocationPermission().then( () => {
+      if (this.state.hasLocationPermission) {
+        Geolocation.watchPosition(
+            (position) => {
+                console.log(position);
+            },
+            (error) => {
+                console.log(error.code, error.message);
+            },
+            { enableHighAccuracy: true}
+        );
+      }
+    });
+  }
+
+  async requestLocationPermission() {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION
+      ]).then(result => {
+        if (result['android.permission.ACCESS_COARSE_LOCATION']
+            && result['android.permission.ACCESS_FINE_LOCATION']) {
+              this.setState({
+                hasLocationPermission: true
+              });
+            }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    } catch (err) {
+      console.warn(err);
+    }
+  } 
+
   render() {
     return (
       <View style={styles.container}>
