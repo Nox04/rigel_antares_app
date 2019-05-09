@@ -120,7 +120,8 @@ class Login extends Component {
       phone: this.state.phone,
       pin: this.state.pin
     }).then(() => {
-      this.props.navigation.navigate('HomePage');
+      if(this.props.auth.isAuthenticated)
+        this.props.navigation.navigate('HomePage');
     });
   }
 }

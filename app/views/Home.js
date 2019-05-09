@@ -10,30 +10,33 @@ import {
 } from 'react-native';
 import { Input, Button, Icon } from 'react-native-elements';
 import Geolocation from 'react-native-geolocation-service';
+import {connect} from 'react-redux';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 const BG_IMAGE = require('../assets/images/main.jpg');
 
-export default class Home extends Component {
+class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasLocationPermission: true
+      hasLocationPermission: true,
+      latitude: 0,
+      longitude: 0
     }
   }
   componentDidMount() {
     this.requestLocationPermission().then( () => {
       if (this.state.hasLocationPermission) {
         Geolocation.watchPosition(
-            (position) => {
-                console.log(position);
-            },
-            (error) => {
-                console.log(error.code, error.message);
-            },
-            { enableHighAccuracy: true}
+          (position) => {
+            this.setState({latitude:position.coords.latitude, longitude: position.coords.longitude});
+          },
+          (error) => {
+            console.log(error.code, error.message);
+          },
+          { enableHighAccuracy: true, distanceFilter: 10}
         );
       }
     });
@@ -71,7 +74,11 @@ export default class Home extends Component {
           <View style={styles.loginView}>
             <View style={styles.loginTitle}>
               <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.travelText}>HOME</Text>
+                <Text style={styles.travelText}>Bienvenido {this.props.auth.user.name.substring(0, this.props.auth.user.name.indexOf(' '))}</Text>
+                
+              </View>
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.travelText}>{`${this.state.latitude} - ${this.state.longitude}`}</Text>
               </View>
             </View>
           </View>
@@ -92,11 +99,22 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT + 20,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   travelText: {
     color: 'white',
     fontSize: 30,
-    fontFamily: 'bold',
-  }
+    fontFamily: 'bold'
+  },
+  loginTitle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 });
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps) (Home);

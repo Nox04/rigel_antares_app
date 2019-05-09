@@ -38,6 +38,9 @@ export const login = data => async dispatch => {
   dispatch({
     type: SHOW_LOADING
   });
+
+  let result = false;
+
   await axios.post(`${BASE_URL}/mauth/login`, data)
     .then( ({data, headers}) => {
       setToken(headers.authorization);
@@ -46,14 +49,18 @@ export const login = data => async dispatch => {
         type: LOGIN,
         payload: data.user
       });
+
+      result = true;
     })
     .catch(error => {
       console.log(error);
+      result = false;
     })
     .then(() => {
       dispatch({
         type: HIDE_LOADING
       });
+      return result;
     });
 };
 
