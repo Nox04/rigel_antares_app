@@ -29,32 +29,18 @@ class Home extends Component {
         Authorization: 'Bearer ' + this.props.auth.token,
       }
     }
-    this.pusher = new Pusher(PUSHER_CONFIG.key, config); // (1)
-    this.chatChannel = this.pusher.subscribe('private-new-rides'); // (2)
-    this.chatChannel.bind('pusher:subscription_succeeded', () => { // (3)
-      console.log('done');
-      this.chatChannel.bind('join', (data) => { // (4)
-        this.handleJoin(data.name);
-      });
-      this.chatChannel.bind('part', (data) => { // (5)
-        this.handlePart(data.name);
-      });
-      this.chatChannel.bind('message', (data) => { // (6)
-        this.handleMessage(data.name, data.message);
+    this.pusher = new Pusher(PUSHER_CONFIG.key, config);
+    this.pusher.disco
+    this.chatChannel = this.pusher.subscribe('private-new-rides'); 
+    this.chatChannel.bind('pusher:subscription_succeeded', () => { 
+      this.chatChannel.bind('App\\Events\\RideCreated', (data) => { 
+        this.handleMessage(data);
       });
     });
   }
 
-  handleJoin(name) { // (4)
-    console.log(name);
-  }
-
-  handlePart(name) { // (5)
-    console.log(name);
-  }
-
-  handleMessage(name, message) { // (6)
-    console.log(name, message);
+  handleMessage(data) {
+    console.log(data);
   }
 
   componentDidMount() {

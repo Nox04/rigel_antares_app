@@ -11,7 +11,6 @@ import {
 } from './types';
 
 export const setGPS = () => async dispatch => {
-  console.log(store.getState().auth.token);
   if (store.getState().location.hasLocationPermission) {
     await Geolocation.watchPosition(
       (position) => {
@@ -35,7 +34,7 @@ export const setGPS = () => async dispatch => {
           }
         })
         .then( resp => {
-          console.log(resp);
+          //console.log(resp);
         })
         .catch( error => {
           console.log(error);

@@ -10,5 +10,5 @@ export const PUSHER_CONFIG = {
   encrypted: true,
   namespace: 'App.Events',
   broadcaster: 'pusher',
-  authEndpoint: 'https://antares.rigel.digital/broadcasting/auth'
+  authEndpoint: 'https://antares.rigel.digital/mobile/broadcasting/auth'
 }
