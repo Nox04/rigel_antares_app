@@ -1,3 +1,5 @@
+import store from './store';
+
 export const BASE_URL = 'https://antares.rigel.digital/api';
 
 export const PUSHER_CONFIG = {
@@ -5,5 +7,8 @@ export const PUSHER_CONFIG = {
   key: "2d250613bf1826bdc4c5",
   secret: "1cc248647f5a55178fcb",
   cluster: "us2",
-  encrypted: true
+  encrypted: true,
+  namespace: 'App.Events',
+  broadcaster: 'pusher',
+  authEndpoint: 'https://antares.rigel.digital/broadcasting/auth'
 }

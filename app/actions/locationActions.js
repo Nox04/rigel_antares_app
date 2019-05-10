@@ -11,6 +11,7 @@ import {
 } from './types';
 
 export const setGPS = () => async dispatch => {
+  console.log(store.getState().auth.token);
   if (store.getState().location.hasLocationPermission) {
     await Geolocation.watchPosition(
       (position) => {
@@ -21,7 +22,6 @@ export const setGPS = () => async dispatch => {
             longitude: position.coords.longitude
           }
         });
-        console.log(store.getState().auth.token);
         axios({
           method: 'POST',
           url: `${BASE_URL}/messengers/geo`,

@@ -22,9 +22,17 @@ const BG_IMAGE = require('../assets/images/main.jpg');
 class Home extends Component {
   constructor(props) {
     super(props);
-    this.pusher = new Pusher(PUSHER_CONFIG.key, PUSHER_CONFIG); // (1)
-    this.chatChannel = this.pusher.subscribe('new-rides'); // (2)
+
+    let config = PUSHER_CONFIG;
+    config.auth = {
+      headers: {
+        Authorization: 'Bearer ' + this.props.auth.token,
+      }
+    }
+    this.pusher = new Pusher(PUSHER_CONFIG.key, config); // (1)
+    this.chatChannel = this.pusher.subscribe('private-new-rides'); // (2)
     this.chatChannel.bind('pusher:subscription_succeeded', () => { // (3)
+      console.log('done');
       this.chatChannel.bind('join', (data) => { // (4)
         this.handleJoin(data.name);
       });
@@ -38,27 +46,15 @@ class Home extends Component {
   }
 
   handleJoin(name) { // (4)
-    const messages = this.state.messages.slice();
-    messages.push({action: 'join', name: name});
-    this.setState({
-      messages: messages
-    });
+    console.log(name);
   }
 
   handlePart(name) { // (5)
-    const messages = this.state.messages.slice();
-    messages.push({action: 'part', name: name});
-    this.setState({
-      messages: messages
-    });
+    console.log(name);
   }
 
   handleMessage(name, message) { // (6)
-    const messages = this.state.messages.slice();
-    messages.push({action: 'message', name: name, message: message});
-    this.setState({
-      messages: messages
-    });
+    console.log(name, message);
   }
 
   componentDidMount() {
