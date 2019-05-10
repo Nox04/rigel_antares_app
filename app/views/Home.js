@@ -14,6 +14,7 @@ import {connect} from 'react-redux';
 import {setPermission, setGPS} from '../actions/locationActions';
 import Pusher from 'pusher-js/react-native';
 import {PUSHER_CONFIG} from '../config';
+import Tts from 'react-native-tts';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -34,7 +35,7 @@ class Home extends Component {
     this.chatChannel = this.pusher.subscribe('private-new-rides'); 
     this.chatChannel.bind('pusher:subscription_succeeded', () => { 
       this.chatChannel.bind('App\\Events\\RideCreated', (data) => { 
-        this.handleMessage(data);
+        Tts.speak('Nuevo domicilio');
       });
     });
   }
@@ -79,7 +80,7 @@ class Home extends Component {
           <View style={styles.loginView}>
             <View style={styles.loginTitle}>
               <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.travelText}>Bienvenido {this.props.auth.user.name.substring(0, this.props.auth.user.name.indexOf(' '))}</Text>
+                <Text style={styles.travelText}>Bienvenido {this.props.auth.user ? this.props.auth.user.name.substring(0, this.props.auth.user.name.indexOf(' ')) : ''}</Text>
                 
               </View>
               <View style={{ flexDirection: 'row' }}>

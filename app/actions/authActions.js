@@ -30,6 +30,41 @@ const getToken = async () => {
   }
 }
 
+export const checkLocal = () => async dispatch => {
+  dispatch({
+    type: SHOW_LOADING
+  });
+
+  const token = await getToken();
+  await axios({
+    method: 'GET',
+    url: `${BASE_URL}/mauth/user`,
+    headers:{
+      'Authorization':`Bearer ${token}`
+    }
+  })
+  .then( ({data}) => {
+    dispatch({
+      type: SET_TOKEN,
+      payload: token
+    });
+    dispatch({
+      type: LOGIN,
+      payload: data.data
+    });
+    dispatch({
+      type: HIDE_LOADING
+    });
+    return true;
+  })
+  .catch( error => {
+    dispatch({
+      type: HIDE_LOADING
+    });
+    return false;
+  });
+}
+
 export const login = data => async dispatch => {
   dispatch({
     type: SHOW_LOADING

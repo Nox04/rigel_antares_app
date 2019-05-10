@@ -11,7 +11,7 @@ import {
 import { Input, Button, Icon } from 'react-native-elements';
 import Colors from '../modules/Colors';
 import {connect} from 'react-redux';
-import {login} from '../actions/authActions';
+import {login, checkLocal} from '../actions/authActions';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -23,9 +23,17 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      phone:'3168819879',
-      pin:'1104'
+      phone:'',
+      pin:''
     }
+  }
+
+  componentDidMount() {
+    this.props.checkLocal().then(() => {
+      if(this.props.auth.isAuthenticated) {
+        this.props.navigation.navigate('HomePage');
+      }
+    });
   }
 
   render() {
@@ -62,7 +70,6 @@ class Login extends Component {
               onSubmitEditing={() => { this.secondTextInput.focus(); }}
               returnKeyType="next"
               onChangeText = {value => this.setState({phone:value})}
-              value="3168819879"
               maxLength={12}
               blurOnSubmit={false}
               placeholderTextColor={Colors.Textbox.color}
@@ -86,7 +93,6 @@ class Login extends Component {
               autoCapitalize="none"
               autoCorrect={false}
               maxLength={4}
-              value="1104"
               keyboardType="number-pad"
               onChangeText = {value => this.setState({pin:value})}
               returnKeyType="done"
@@ -175,4 +181,4 @@ const mapStateToProps = state => ({
   auth: state.auth
 });
 
-export default connect(mapStateToProps, {login}) (Login);
+export default connect(mapStateToProps, {login, checkLocal}) (Login);
