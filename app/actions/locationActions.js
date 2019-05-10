@@ -1,6 +1,7 @@
 import axios from 'axios';
 import store from '../store';
 import Geolocation from 'react-native-geolocation-service';
+import {BASE_URL} from '../config';
 
 // types
 import {
@@ -19,6 +20,25 @@ export const setGPS = () => async dispatch => {
             latitude:position.coords.latitude,
             longitude: position.coords.longitude
           }
+        });
+        console.log(store.getState().auth.token);
+        axios({
+          method: 'POST',
+          url: `${BASE_URL}/messengers/geo`,
+          headers:{
+            'Authorization':`Bearer ${store.getState().auth.token}`
+          },
+          data: {
+            id: store.getState().auth.user.id,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          }
+        })
+        .then( resp => {
+          console.log(resp);
+        })
+        .catch( error => {
+          console.log(error);
         });
       },
       (error) => {

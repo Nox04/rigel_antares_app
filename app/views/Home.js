@@ -12,12 +12,54 @@ import { Input, Button, Icon } from 'react-native-elements';
 import Geolocation from 'react-native-geolocation-service';
 import {connect} from 'react-redux';
 import {setPermission, setGPS} from '../actions/locationActions';
+import Pusher from 'pusher-js/react-native';
+import {PUSHER_CONFIG} from '../config';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const BG_IMAGE = require('../assets/images/main.jpg');
 
 class Home extends Component {
+  constructor(props) {
+    super(props);
+    this.pusher = new Pusher(PUSHER_CONFIG.key, PUSHER_CONFIG); // (1)
+    this.chatChannel = this.pusher.subscribe('new-rides'); // (2)
+    this.chatChannel.bind('pusher:subscription_succeeded', () => { // (3)
+      this.chatChannel.bind('join', (data) => { // (4)
+        this.handleJoin(data.name);
+      });
+      this.chatChannel.bind('part', (data) => { // (5)
+        this.handlePart(data.name);
+      });
+      this.chatChannel.bind('message', (data) => { // (6)
+        this.handleMessage(data.name, data.message);
+      });
+    });
+  }
+
+  handleJoin(name) { // (4)
+    const messages = this.state.messages.slice();
+    messages.push({action: 'join', name: name});
+    this.setState({
+      messages: messages
+    });
+  }
+
+  handlePart(name) { // (5)
+    const messages = this.state.messages.slice();
+    messages.push({action: 'part', name: name});
+    this.setState({
+      messages: messages
+    });
+  }
+
+  handleMessage(name, message) { // (6)
+    const messages = this.state.messages.slice();
+    messages.push({action: 'message', name: name, message: message});
+    this.setState({
+      messages: messages
+    });
+  }
 
   componentDidMount() {
     this.requestLocationPermission().then( () => {

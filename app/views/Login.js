@@ -23,8 +23,8 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      phone:'',
-      pin:''
+      phone:'3168819879',
+      pin:'1104'
     }
   }
 
@@ -62,6 +62,7 @@ class Login extends Component {
               onSubmitEditing={() => { this.secondTextInput.focus(); }}
               returnKeyType="next"
               onChangeText = {value => this.setState({phone:value})}
+              value="3168819879"
               maxLength={12}
               blurOnSubmit={false}
               placeholderTextColor={Colors.Textbox.color}
@@ -85,6 +86,7 @@ class Login extends Component {
               autoCapitalize="none"
               autoCorrect={false}
               maxLength={4}
+              value="1104"
               keyboardType="number-pad"
               onChangeText = {value => this.setState({pin:value})}
               returnKeyType="done"

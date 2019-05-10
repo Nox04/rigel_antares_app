@@ -14,10 +14,6 @@ import {
 const setToken = async token => {
   try {
     await AsyncStorage.setItem('@token', token);
-    dispatch({
-      type: SET_TOKEN,
-      payload: token
-    });
   } catch (e) {
     // saving error
   }
@@ -42,7 +38,10 @@ export const login = data => async dispatch => {
   await axios.post(`${BASE_URL}/mauth/login`, data)
     .then( ({data, headers}) => {
       setToken(headers.authorization);
-      
+      dispatch({
+        type: SET_TOKEN,
+        payload: headers.authorization
+      });
       dispatch({
         type: LOGIN,
         payload: data.user
