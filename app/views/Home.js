@@ -17,10 +17,12 @@ import Pusher from 'pusher-js/react-native';
 import {PUSHER_CONFIG} from '../config';
 import Tts from 'react-native-tts';
 import NavigationDrawerLayout from 'react-native-navigation-drawer-layout';
+import RNPusherPushNotifications from 'react-native-pusher-push-notifications';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+const donutsInterest = 'debug-donuts';
 
 const list = [
   {
@@ -111,6 +113,49 @@ class Home extends Component {
         Tts.speak('Nuevo domicilio');
       });
     });
+
+    // Set your app key and register for push
+    RNPusherPushNotifications.setInstanceId('33b1e9c9-6172-4c24-9123-c2f324e54ffc');
+
+    // Init interests after registration
+    RNPusherPushNotifications.on('registered', () => {
+      subscribe(donutsInterest);
+    });
+
+    // Setup notification listeners
+    RNPusherPushNotifications.on('notification', handleNotification);
+  }
+
+  // Handle notifications received
+  handleNotification(notification) {
+    console.log(notification);
+  }
+
+  // Subscribe to an interest
+  subscribe(interest) {
+    // Note that only Android devices will respond to success/error callbacks
+    RNPusherPushNotifications.subscribe(
+      interest,
+      (statusCode, response) => {
+        console.error(statusCode, response);
+      },
+      () => {
+        console.log('Success');
+      }
+    );
+  }
+
+  // Unsubscribe from an interest
+  unsubscribe(interest) {
+    RNPusherPushNotifications.unsubscribe(
+      interest,
+      (statusCode, response) => {
+        console.tron.logImportant(statusCode, response);
+      },
+      () => {
+        console.tron.logImportant('Success');
+      }
+    );
   }
 
   handleMessage(data) {
