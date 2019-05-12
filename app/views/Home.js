@@ -168,14 +168,12 @@ class Home extends Component {
         <NavigationDrawerLayout
         percent={75}
         ref = {_drawer => this.drawer = _drawer}
-        //statusBar="#008cff"
-        //statusBarTransparency={0.3}
         type={this.state.type}
         drawerPosition="left"
         window="menu"
         color="#fff"
-        backgroundColor="#fff" //303030
-        imageBackground="https://c.wallhere.com/photos/aa/44/glare_colorful_bright_circles-679384.jpg!d"
+        backgroundColor="#fff"
+        imageBackground={require('../assets/images/menu.jpg')}
         first={'name'}
         second={'phone'}
         account={[
@@ -187,19 +185,13 @@ class Home extends Component {
         ]}
         menu={[
           {
-            type: 'title',
-            title: 'Opciones',
-            colorText: '#000',
-          },
-          { type: 'divider' },
-          {
             type: 'menu',
             name: 'opt1',
             title: 'Iniciar jornada',
             icon: 'play-circle-filled',
-            colorText: '#000',
+            colorText: '#5d59c3',
             colorTextFocus: '#607D8B',
-            colorIcon: '#2f7dc0',
+            colorIcon: '#5d59c3',
             colorIconFocus: '#607D8B',
             background: 'transparent',
             backgroundFocus: '#e8e8e8',
@@ -210,9 +202,9 @@ class Home extends Component {
             name: 'opt2',
             title: 'Terminar jornada',
             icon: 'stop',
-            colorText: '#000',
+            colorText: '#5d59c3',
             colorTextFocus: '#607D8B',
-            colorIcon: '#2f7dc0',
+            colorIcon: '#5d59c3',
             colorIconFocus: '#607D8B',
             background: 'transparent',
             backgroundFocus: '#e8e8e8',
@@ -223,9 +215,9 @@ class Home extends Component {
             name: 'opt3',
             title: 'Cerrar sesión',
             icon: 'exit-to-app',
-            colorText: '#000',
+            colorText: '#5d59c3',
             colorTextFocus: '#607D8B',
-            colorIcon: '#2f7dc0',
+            colorIcon: '#5d59c3',
             colorIconFocus: '#607D8B',
             background: 'transparent',
             backgroundFocus: '#e8e8e8',
