@@ -6,23 +6,96 @@ import {
   ImageBackground,
   Dimensions,
   StatusBar,
-  PermissionsAndroid
+  PermissionsAndroid,
+  FlatList
 } from 'react-native';
-import { Input, Button, Icon } from 'react-native-elements';
+import { Input, Button, Icon, Header, ListItem, SearchBar } from 'react-native-elements';
 import Geolocation from 'react-native-geolocation-service';
 import {connect} from 'react-redux';
 import {setPermission, setGPS} from '../actions/locationActions';
 import Pusher from 'pusher-js/react-native';
 import {PUSHER_CONFIG} from '../config';
 import Tts from 'react-native-tts';
+import NavigationDrawerLayout from 'react-native-navigation-drawer-layout';
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const BG_IMAGE = require('../assets/images/main.jpg');
+
+const list = [
+  {
+    name: 'Juan David Angarita',
+    icon: 'av-timer',
+    subtitle: '10 de Mayo 09:30',
+    price: '$3000'
+  },
+  {
+    name: 'Carlos José Gonzalez',
+    icon: 'flight-takeoff',
+    subtitle: '10 de Mayo 08:17',
+    price: '$4000'
+  },
+  {
+    name: 'Juan David Angarita',
+    icon: 'av-timer',
+    subtitle: '10 de Mayo 09:30',
+    price: '$3000'
+  },
+  {
+    name: 'Carlos José Gonzalez',
+    icon: 'flight-takeoff',
+    subtitle: '10 de Mayo 08:17',
+    price: '$4000'
+  },
+  {
+    name: 'Juan David Angarita',
+    icon: 'av-timer',
+    subtitle: '10 de Mayo 09:30',
+    price: '$3000'
+  },
+  {
+    name: 'Carlos José Gonzalez',
+    icon: 'flight-takeoff',
+    subtitle: '10 de Mayo 08:17',
+    price: '$4000'
+  },
+  {
+    name: 'Juan David Angarita',
+    icon: 'av-timer',
+    subtitle: '10 de Mayo 09:30',
+    price: '$3000'
+  },
+  {
+    name: 'Carlos José Gonzalez',
+    icon: 'flight-takeoff',
+    subtitle: '10 de Mayo 08:17',
+    price: '$4000'
+  },
+  {
+    name: 'Juan David Angarita',
+    icon: 'av-timer',
+    subtitle: '10 de Mayo 09:30',
+    price: '$3000'
+  },
+  {
+    name: 'Carlos José Gonzalez',
+    icon: 'flight-takeoff',
+    subtitle: '10 de Mayo 08:17',
+    price: '$4000'
+  }
+];
+
+keyExtractor = (item, index) => index.toString();
 
 class Home extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      search: '',
+      menu: '',
+      type: ''
+    };
 
     let config = PUSHER_CONFIG;
     config.auth = {
@@ -45,6 +118,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    this.drawer.closeDrawer();
     this.requestLocationPermission().then( () => {
       this.props.setGPS();
     });
@@ -69,26 +143,122 @@ class Home extends Component {
     }
   } 
 
+  renderItem = ({ item }) => (
+    <ListItem
+      title={item.name}
+      subtitle={item.subtitle}
+      leftIcon={{ name: item.icon, size: 38 }}
+      rightTitle={item.price}
+    />
+  );
+
+  updateSearch = search => {
+    this.setState({ search });
+  };
+
   render() {
+    const { search } = this.state;
+
     return (
       <View style={styles.container}>
-      <StatusBar
-        backgroundColor="#314F85"
-        barStyle="light-content"
-      />
-        <ImageBackground  source={BG_IMAGE} style={styles.bgImage}>
-          <View style={styles.loginView}>
-            <View style={styles.loginTitle}>
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.travelText}>Bienvenido {this.props.auth.user ? this.props.auth.user.name.substring(0, this.props.auth.user.name.indexOf(' ')) : ''}</Text>
-                
-              </View>
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.travelText}>{`${this.props.location.latitude} - ${this.props.location.longitude}`}</Text>
-              </View>
-            </View>
-          </View>
-        </ImageBackground>
+        <StatusBar
+          backgroundColor="#fff"
+          barStyle="dark-content"
+        />
+        <NavigationDrawerLayout
+        percent={75}
+        ref = {_drawer => this.drawer = _drawer}
+        //statusBar="#008cff"
+        //statusBarTransparency={0.3}
+        type={this.state.type}
+        drawerPosition="left"
+        window="menu"
+        color="#fff"
+        backgroundColor="#fff" //303030
+        imageBackground="https://c.wallhere.com/photos/aa/44/glare_colorful_bright_circles-679384.jpg!d"
+        first={'name'}
+        second={'phone'}
+        account={[
+          {
+            name: 'Juan David Angarita',
+            phone: '3168819879',
+            circle: ['transparent', 'transparent'],
+          }
+        ]}
+        menu={[
+          {
+            type: 'title',
+            title: 'Opciones',
+            colorText: '#000',
+          },
+          { type: 'divider' },
+          {
+            type: 'menu',
+            name: 'opt1',
+            title: 'Iniciar jornada',
+            icon: 'play-circle-filled',
+            colorText: '#000',
+            colorTextFocus: '#607D8B',
+            colorIcon: '#2f7dc0',
+            colorIconFocus: '#607D8B',
+            background: 'transparent',
+            backgroundFocus: '#e8e8e8',
+            close: true
+          },
+          {
+            type: 'menu',
+            name: 'opt2',
+            title: 'Terminar jornada',
+            icon: 'stop',
+            colorText: '#000',
+            colorTextFocus: '#607D8B',
+            colorIcon: '#2f7dc0',
+            colorIconFocus: '#607D8B',
+            background: 'transparent',
+            backgroundFocus: '#e8e8e8',
+            close: true
+          },
+          {
+            type: 'menu',
+            name: 'opt3',
+            title: 'Cerrar sesión',
+            icon: 'exit-to-app',
+            colorText: '#000',
+            colorTextFocus: '#607D8B',
+            colorIcon: '#2f7dc0',
+            colorIconFocus: '#607D8B',
+            background: 'transparent',
+            backgroundFocus: '#e8e8e8',
+            close: true
+          },
+        ]}
+        onPress={e => {}}>
+          <Header
+            placement="left"
+            leftComponent={{ icon: 'menu', color: '#5d59c3', size: 32, onPress: () =>{ this.drawer.openDrawer() }}}
+            centerComponent={{ text: 'Historial de envíos', style: { color: '#707ba1', fontWeight: '900', fontSize: 24 } }}
+            rightComponent={{ icon: 'filter-list', color: '#5d59c3', size: 32 }}
+            containerStyle={{
+              backgroundColor: '#fff',
+              justifyContent: 'space-around',
+            }}
+          />
+          <SearchBar
+            round
+            containerStyle={{backgroundColor: 'white'}}
+            inputContainerStyle={{backgroundColor: '#ebebeb'}}
+            placeholderTextColor="#707ba1"
+            lightTheme
+            placeholder="Buscar..."
+            onChangeText={this.updateSearch}
+            value={search}
+          />
+          <FlatList
+            keyExtractor={this.keyExtractor}
+            data={list}
+            renderItem={this.renderItem}
+          />
+        </NavigationDrawerLayout>
       </View>
     );
   }
@@ -97,26 +267,7 @@ class Home extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  bgImage: {
-    flex: 1,
-    top: 0,
-    left: 0,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT + 20,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  travelText: {
-    color: 'white',
-    fontSize: 30,
-    fontFamily: 'bold'
-  },
-  loginTitle: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
+  }
 });
 
 const mapStateToProps = state => ({
