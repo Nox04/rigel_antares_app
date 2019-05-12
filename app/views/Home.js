@@ -15,6 +15,7 @@ import {connect} from 'react-redux';
 import {setPermission, setGPS} from '../actions/locationActions';
 import Tts from 'react-native-tts';
 import NavigationDrawerLayout from 'react-native-navigation-drawer-layout';
+import OneSignal from 'react-native-onesignal';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -93,7 +94,33 @@ class Home extends Component {
       search: '',
       menu: '',
       type: ''
-    };
+    }
+
+    OneSignal.init("1a399796-8b22-44bc-828e-22ac3d91966a");
+    OneSignal.addEventListener('received', this.onReceived);
+    OneSignal.addEventListener('opened', this.onOpened);
+    OneSignal.addEventListener('ids', this.onIds);
+  }
+
+  onReceived(notification) {
+    console.log("Notification received: ", notification);
+  }
+
+  onOpened(openResult) {
+    console.log('Message: ', openResult.notification.payload.body);
+    console.log('Data: ', openResult.notification.payload.additionalData);
+    console.log('isActive: ', openResult.notification.isAppInFocus);
+    console.log('openResult: ', openResult);
+  }
+
+  onIds(device) {
+    console.log('Device info: ', device);
+  }
+
+  componentWillUnmount() {
+    OneSignal.removeEventListener('received', this.onReceived);
+    OneSignal.removeEventListener('opened', this.onOpened);
+    OneSignal.removeEventListener('ids', this.onIds);
   }
 
   componentDidMount() {
