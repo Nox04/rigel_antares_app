@@ -16,6 +16,7 @@ import {setPermission, setGPS} from '../actions/locationActions';
 import Tts from 'react-native-tts';
 import NavigationDrawerLayout from 'react-native-navigation-drawer-layout';
 import OneSignal from 'react-native-onesignal';
+import { withNavigation } from 'react-navigation';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -89,7 +90,6 @@ keyExtractor = (item, index) => index.toString();
 class Home extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       search: '',
       menu: '',
@@ -98,13 +98,11 @@ class Home extends Component {
 
     OneSignal.init("1a399796-8b22-44bc-828e-22ac3d91966a");
     OneSignal.sendTag('phone', this.props.auth.user.phone);
-    OneSignal.addEventListener('received', this.onReceived);
+    OneSignal.addEventListener('received', () => {
+      this.props.navigation.navigate('NewRidePage');
+    });
     OneSignal.addEventListener('opened', this.onOpened);
     OneSignal.addEventListener('ids', this.onIds);
-  }
-
-  onReceived(notification) {
-    console.log("Notification received: ", notification);
   }
 
   onOpened(openResult) {
@@ -185,8 +183,8 @@ class Home extends Component {
         second={'phone'}
         account={[
           {
-            name: 'Juan David Angarita',
-            phone: '3168819879',
+            name: this.props.auth.user.name,
+            phone: this.props.auth.user.phone,
             circle: ['transparent', 'transparent'],
           }
         ]}
@@ -274,4 +272,4 @@ const mapStateToProps = state => ({
   location: state.location
 });
 
-export default connect(mapStateToProps, {setPermission, setGPS}) (Home);
+export default connect(mapStateToProps, {setPermission, setGPS}) (withNavigation(Home));
