@@ -97,6 +97,7 @@ class Home extends Component {
     }
 
     OneSignal.init("1a399796-8b22-44bc-828e-22ac3d91966a");
+    OneSignal.sendTag('phone', this.props.auth.user.phone);
     OneSignal.addEventListener('received', this.onReceived);
     OneSignal.addEventListener('opened', this.onOpened);
     OneSignal.addEventListener('ids', this.onIds);
