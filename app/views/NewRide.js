@@ -19,12 +19,15 @@ class NewRide extends Component {
 
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         <StatusBar
           backgroundColor={Colors.StatusBar.color}
           barStyle="light-content"
         />
-        <Text style={styles.titleText}>Nuevo Domicilio</Text>
+        <View style={styles.loginView}>
+          <View style={{ flexDirection: 'row' }}></View>
+          <Text style={styles.titleText}>Nuevo Domicilio</Text>
+        </View>
       </View>
     );
   }
