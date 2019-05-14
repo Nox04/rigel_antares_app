@@ -9,9 +9,6 @@ import Login from './views/Login';
 import Home from './views/Home';
 import NewRide from './views/NewRide';
 
-//REMOVE IN PROD
-GLOBAL.XMLHttpRequest = GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest;
-
 const MainNavigator = createStackNavigator({
   LoginPage: {screen: Login, navigationOptions:{header: null}},
   HomePage: {screen: Home, navigationOptions:{header: null}},

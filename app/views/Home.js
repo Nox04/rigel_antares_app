@@ -12,8 +12,8 @@ import {
 import { Input, Button, Icon, Header, ListItem, SearchBar } from 'react-native-elements';
 import Geolocation from 'react-native-geolocation-service';
 import {connect} from 'react-redux';
-import {setPermission, setGPS} from '../actions/locationActions';
-import {logout} from '../actions/authActions';
+import {setPermission, setGPS, sendGPS} from '../actions/locationActions';
+import {logout, stopWorking, startWorking} from '../actions/authActions';
 import {showLoading, hideLoading} from '../actions/baseActions';
 import Tts from 'react-native-tts';
 import NavigationDrawerLayout from 'react-native-navigation-drawer-layout';
@@ -118,9 +118,23 @@ class Home extends Component {
 
   logout = () => {
     this.props.showLoading();
-    this.props.logout().then(() => {
-      if(!this.props.auth.isAuthenticated)
-        this.props.navigation.navigate('LoginPage');
+    this.props.stopWorking().then(() =>{
+      this.props.logout().then(() => {
+        if(!this.props.auth.isAuthenticated)
+          this.props.navigation.navigate('LoginPage');
+      });
+    });
+  }
+
+  stopJourny = () => {
+    this.props.showLoading();
+    this.props.stopWorking().then(() => {});
+  }
+
+  startJourny = () => {
+    this.props.showLoading();
+    this.props.startWorking().then(() => {
+      sendGPS();
     });
   }
 
@@ -294,4 +308,11 @@ const mapStateToProps = state => ({
   location: state.location
 });
 
-export default connect(mapStateToProps, {setPermission, setGPS, logout, showLoading, hideLoading}) (withNavigation(Home));
+export default connect(mapStateToProps, {
+  setPermission, 
+  setGPS,
+  logout, 
+  showLoading, 
+  stopWorking, 
+  startWorking
+}) (withNavigation(Home));

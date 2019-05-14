@@ -1,9 +1,10 @@
 // types
-import {LOGOUT, LOGIN, SET_TOKEN} from '../actions/types';
+import {LOGOUT, LOGIN, SET_TOKEN, START_WORKING, STOP_WORKING} from '../actions/types';
 
 const preloadedState = {
   token: null,
   isAuthenticated: false,
+  isWorking: false,
   user: {},
 };
 
@@ -15,6 +16,19 @@ export default (state = preloadedState, {payload, type}) => {
         isAuthenticated: false,
         user: {},
       };
+
+    case START_WORKING:
+      return {
+        ...state,
+        isWorking: true
+      }
+
+    case STOP_WORKING:
+      return {
+        ...state,
+        isWorking: false
+      }  
+      
     case LOGIN:
       return {
         ...state,
@@ -27,6 +41,7 @@ export default (state = preloadedState, {payload, type}) => {
         ...state,
         token: payload
       };
+
     default:
       return state;
   }

@@ -10,6 +10,27 @@ import {
   SET_PERMISSION
 } from './types';
 
+export const sendGPS = async () => {
+  await axios({
+    method: 'POST',
+    url: `${BASE_URL}/messengers/geo`,
+    headers:{
+      'Authorization':`Bearer ${store.getState().auth.token}`
+    },
+    data: {
+      id: store.getState().auth.user.id,
+      latitude: store.getState().location.latitude,
+      longitude: store.getState().location.longitude
+    }
+  })
+  .then( resp => {
+    //console.log(resp);
+  })
+  .catch( error => {
+    console.log(error);
+  });
+}
+
 export const setGPS = () => async dispatch => {
   if (store.getState().location.hasLocationPermission) {
     await Geolocation.watchPosition(
@@ -21,29 +42,14 @@ export const setGPS = () => async dispatch => {
             longitude: position.coords.longitude
           }
         });
-        axios({
-          method: 'POST',
-          url: `${BASE_URL}/messengers/geo`,
-          headers:{
-            'Authorization':`Bearer ${store.getState().auth.token}`
-          },
-          data: {
-            id: store.getState().auth.user.id,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          }
-        })
-        .then( resp => {
-          //console.log(resp);
-        })
-        .catch( error => {
-          console.log(error);
-        });
+        if(store.getState().auth.isWorking) {
+          sendGPS();
+        }
       },
       (error) => {
         console.log(error.code, error.message);
       },
-      { enableHighAccuracy: true, distanceFilter: 10}
+      { enableHighAccuracy: true, distanceFilter: 5}
     );
   }
 };

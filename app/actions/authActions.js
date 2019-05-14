@@ -1,12 +1,15 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import {BASE_URL} from '../config';
+import store from '../store';
 
 // types
 import {
   LOGOUT,
   LOGIN,
   SET_TOKEN,
+  START_WORKING,
+  STOP_WORKING,
   HIDE_LOADING,
   SHOW_LOADING
 } from './types';
@@ -92,18 +95,63 @@ export const login = data => async dispatch => {
     });
 };
 
-export const logout = () => async dispatch => {
-  dispatch({
-    type: SHOW_LOADING
-  });
+export const stopWorking = () => async dispatch => {
+  await axios({
+    method: 'POST',
+    url: `${BASE_URL}/messengers/stop`,
+    headers:{
+      'Authorization':`Bearer ${store.getState().auth.token}`
+    },
+    data: {
+      id: store.getState().auth.user.id,
+    }
+  }).then(() => {
+      dispatch({
+        type: STOP_WORKING
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    })
+    .then(() => {
+      dispatch({
+        type: HIDE_LOADING
+      });
+    });
+};
 
-  const token = await getToken();
+export const startWorking = () => async dispatch => {
+  await axios({
+    method: 'POST',
+    url: `${BASE_URL}/messengers/start`,
+    headers:{
+      'Authorization':`Bearer ${store.getState().auth.token}`
+    },
+    data: {
+      id: store.getState().auth.user.id,
+    }
+  }).then(() => {
+      dispatch({
+        type: START_WORKING
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    })
+    .then(() => {
+      dispatch({
+        type: HIDE_LOADING
+      });
+    });
+};
+
+export const logout = () => async dispatch => {
 
   await axios({
     method: 'POST',
     url: `${BASE_URL}/mauth/logout`,
     headers:{
-      'Authorization':`Bearer ${token}`
+      'Authorization':`Bearer ${store.getState().auth.token}`
     }
   }).then(() => {
       setToken(null);
