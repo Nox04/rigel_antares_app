@@ -20,6 +20,8 @@ import Tts from 'react-native-tts';
 import NavigationDrawerLayout from 'react-native-navigation-drawer-layout';
 import OneSignal from 'react-native-onesignal';
 import { withNavigation } from 'react-navigation';
+import {BASE_URL} from '../config';
+import axios from 'axios';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -100,17 +102,37 @@ class Home extends Component {
     }
 
     OneSignal.init("1a399796-8b22-44bc-828e-22ac3d91966a");
+    OneSignal.inFocusDisplaying(0);
+    OneSignal.enableVibrate(true);
+    OneSignal.enableSound(true);
     OneSignal.sendTag('phone', this.props.auth.user.phone);
 
     OneSignal.addEventListener('received', this.onReceived);
     OneSignal.addEventListener('opened', this.onOpened);
+    OneSignal.configure();
   }
 
   onOpened = openResult => {
-    console.log('Message: ', openResult.notification.payload.body);
-    console.log('Data: ', openResult.notification.payload.additionalData);
-    console.log('isActive: ', openResult.notification.isAppInFocus);
-    console.log('openResult: ', openResult);
+    console.log(openResult);
+    if(openResult.action.actionID === '1') {
+      axios({
+        method: 'POST',
+        url: `${BASE_URL}/rides/link`,
+        headers:{
+          'Authorization':`Bearer ${this.props.auth.token}`
+        },
+        data: {
+          id: openResult.notification.payload.additionalData.ride_id,
+          messenger_id: this.props.auth.user.id
+        }
+      })
+      .then( resp => {
+        console.log(resp);
+      })
+      .catch( error => {
+        console.log(error);
+      });
+    }
   }
 
   onReceived = () => {
