@@ -93,8 +93,19 @@ export const login = data => async dispatch => {
 };
 
 export const logout = () => async dispatch => {
-  await axios.get(`${BASE_URL}/mauth/logout`)
-    .then(() => {
+  dispatch({
+    type: SHOW_LOADING
+  });
+
+  const token = await getToken();
+
+  await axios({
+    method: 'POST',
+    url: `${BASE_URL}/mauth/logout`,
+    headers:{
+      'Authorization':`Bearer ${token}`
+    }
+  }).then(() => {
       setToken(null);
       dispatch({
         type: LOGOUT,

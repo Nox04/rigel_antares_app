@@ -13,6 +13,8 @@ import { Input, Button, Icon, Header, ListItem, SearchBar } from 'react-native-e
 import Geolocation from 'react-native-geolocation-service';
 import {connect} from 'react-redux';
 import {setPermission, setGPS} from '../actions/locationActions';
+import {logout} from '../actions/authActions';
+import {showLoading, hideLoading} from '../actions/baseActions';
 import Tts from 'react-native-tts';
 import NavigationDrawerLayout from 'react-native-navigation-drawer-layout';
 import OneSignal from 'react-native-onesignal';
@@ -98,28 +100,33 @@ class Home extends Component {
 
     OneSignal.init("1a399796-8b22-44bc-828e-22ac3d91966a");
     OneSignal.sendTag('phone', this.props.auth.user.phone);
-    OneSignal.addEventListener('received', () => {
-      this.props.navigation.navigate('NewRidePage');
-    });
+
+    OneSignal.addEventListener('received', this.onReceived);
     OneSignal.addEventListener('opened', this.onOpened);
-    OneSignal.addEventListener('ids', this.onIds);
   }
 
-  onOpened(openResult) {
+  onOpened = openResult => {
     console.log('Message: ', openResult.notification.payload.body);
     console.log('Data: ', openResult.notification.payload.additionalData);
     console.log('isActive: ', openResult.notification.isAppInFocus);
     console.log('openResult: ', openResult);
   }
 
-  onIds(device) {
-    console.log('Device info: ', device);
+  onReceived = () => {
+    this.props.navigation.navigate('NewRidePage');
+  }
+
+  logout = () => {
+    this.props.showLoading();
+    this.props.logout().then(() => {
+      if(!this.props.auth.isAuthenticated)
+        this.props.navigation.navigate('LoginPage');
+    });
   }
 
   componentWillUnmount() {
     OneSignal.removeEventListener('received', this.onReceived);
     OneSignal.removeEventListener('opened', this.onOpened);
-    OneSignal.removeEventListener('ids', this.onIds);
   }
 
   componentDidMount() {
@@ -229,7 +236,22 @@ class Home extends Component {
             close: true
           },
         ]}
-        onPress={e => {}}>
+        onPress={e => {
+          switch (e.name) {
+            case 'opt1':
+                this.startJourny();
+              break;
+            case 'opt2':
+                this.stopJourny();
+              break;
+            case 'opt3':
+                this.logout();
+              break;
+          
+            default:
+              break;
+          }
+        }}>
           <Header
             placement="left"
             leftComponent={{ icon: 'menu', color: '#5d59c3', size: 32, onPress: () =>{ this.drawer.openDrawer() }}}
@@ -272,4 +294,4 @@ const mapStateToProps = state => ({
   location: state.location
 });
 
-export default connect(mapStateToProps, {setPermission, setGPS}) (withNavigation(Home));
+export default connect(mapStateToProps, {setPermission, setGPS, logout, showLoading, hideLoading}) (withNavigation(Home));
