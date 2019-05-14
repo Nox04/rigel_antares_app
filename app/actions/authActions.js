@@ -34,9 +34,6 @@ const getToken = async () => {
 }
 
 export const checkLocal = () => async dispatch => {
-  dispatch({
-    type: SHOW_LOADING
-  });
 
   const token = await getToken();
   await axios({
@@ -55,16 +52,14 @@ export const checkLocal = () => async dispatch => {
       type: LOGIN,
       payload: data.data
     });
-    dispatch({
-      type: HIDE_LOADING
-    });
-    return true;
   })
   .catch( error => {
+
+  })
+  .then(() => {
     dispatch({
       type: HIDE_LOADING
     });
-    return false;
   });
 }
 

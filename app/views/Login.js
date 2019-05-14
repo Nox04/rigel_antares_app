@@ -12,6 +12,7 @@ import { Input, Button, Icon } from 'react-native-elements';
 import Colors from '../modules/Colors';
 import {connect} from 'react-redux';
 import {login, checkLocal} from '../actions/authActions';
+import {showLoading} from '../actions/baseActions';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -29,6 +30,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
+    this.props.showLoading();
     this.props.checkLocal().then(() => {
       if(this.props.auth.isAuthenticated) {
         this.props.navigation.navigate('HomePage');
@@ -181,4 +183,4 @@ const mapStateToProps = state => ({
   auth: state.auth
 });
 
-export default connect(mapStateToProps, {login, checkLocal}) (Login);
+export default connect(mapStateToProps, {login, checkLocal, showLoading}) (Login);
