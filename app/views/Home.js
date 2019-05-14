@@ -3,20 +3,16 @@ import {
   StyleSheet,
   Text,
   View,
-  ImageBackground,
   Dimensions,
   StatusBar,
   PermissionsAndroid,
-  FlatList,
-  BackHandler
+  FlatList
 } from 'react-native';
-import { Input, Button, Icon, Header, ListItem, SearchBar } from 'react-native-elements';
-import Geolocation from 'react-native-geolocation-service';
+import { Header, ListItem, SearchBar } from 'react-native-elements';
 import {connect} from 'react-redux';
 import {setPermission, setGPS, sendGPS} from '../actions/locationActions';
 import {logout, stopWorking, startWorking} from '../actions/authActions';
-import {showLoading, hideLoading, setRides} from '../actions/baseActions';
-import Tts from 'react-native-tts';
+import {showLoading, setRides} from '../actions/baseActions';
 import NavigationDrawerLayout from 'react-native-navigation-drawer-layout';
 import OneSignal from 'react-native-onesignal';
 import { withNavigation } from 'react-navigation';
@@ -139,13 +135,11 @@ class Home extends Component {
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
     OneSignal.removeEventListener('received', this.onReceived);
     OneSignal.removeEventListener('opened', this.onOpened);
   }
 
   componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     this.drawer.closeDrawer();
 
     this.props.showLoading();

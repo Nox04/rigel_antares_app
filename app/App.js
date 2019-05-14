@@ -1,4 +1,4 @@
-import {createStackNavigator, createAppContainer} from 'react-navigation';
+import {createStackNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation';
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Provider} from 'react-redux';
@@ -13,12 +13,25 @@ import Details from './views/Details';
 
 GLOBAL.XMLHttpRequest = GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest;
 
-const MainNavigator = createStackNavigator({
-  LoginPage: {screen: Login, navigationOptions:{header: null}},
+const AppStack = createStackNavigator({ 
   HomePage: {screen: Home, navigationOptions:{header: null}},
   NewRidePage: {screen: NewRide, navigationOptions:{header: null}},
   DetailsPage: {screen: Details, navigationOptions:{header: null}},
 });
+
+const AuthStack = createStackNavigator({ 
+  LoginPage: {screen: Login, navigationOptions:{header: null}} 
+});
+
+const MainNavigator = createSwitchNavigator({
+    //AuthLoading: AuthLoadingScreen,
+    App: AppStack,
+    Auth: AuthStack,
+  },
+  {
+    initialRouteName: 'Auth',
+  }
+);
 
 let Navigation = createAppContainer(MainNavigator);
 
