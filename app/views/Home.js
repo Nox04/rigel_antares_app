@@ -15,7 +15,7 @@ import Geolocation from 'react-native-geolocation-service';
 import {connect} from 'react-redux';
 import {setPermission, setGPS, sendGPS} from '../actions/locationActions';
 import {logout, stopWorking, startWorking} from '../actions/authActions';
-import {showLoading, hideLoading} from '../actions/baseActions';
+import {showLoading, hideLoading, setRides} from '../actions/baseActions';
 import Tts from 'react-native-tts';
 import NavigationDrawerLayout from 'react-native-navigation-drawer-layout';
 import OneSignal from 'react-native-onesignal';
@@ -26,69 +26,6 @@ import axios from 'axios';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-
-const list = [
-  {
-    name: 'Juan David Angarita',
-    icon: 'av-timer',
-    subtitle: '10 de Mayo 09:30',
-    price: '$3000'
-  },
-  {
-    name: 'Carlos José Gonzalez',
-    icon: 'flight-takeoff',
-    subtitle: '10 de Mayo 08:17',
-    price: '$4000'
-  },
-  {
-    name: 'Juan David Angarita',
-    icon: 'av-timer',
-    subtitle: '10 de Mayo 09:30',
-    price: '$3000'
-  },
-  {
-    name: 'Carlos José Gonzalez',
-    icon: 'flight-takeoff',
-    subtitle: '10 de Mayo 08:17',
-    price: '$4000'
-  },
-  {
-    name: 'Juan David Angarita',
-    icon: 'av-timer',
-    subtitle: '10 de Mayo 09:30',
-    price: '$3000'
-  },
-  {
-    name: 'Carlos José Gonzalez',
-    icon: 'flight-takeoff',
-    subtitle: '10 de Mayo 08:17',
-    price: '$4000'
-  },
-  {
-    name: 'Juan David Angarita',
-    icon: 'av-timer',
-    subtitle: '10 de Mayo 09:30',
-    price: '$3000'
-  },
-  {
-    name: 'Carlos José Gonzalez',
-    icon: 'flight-takeoff',
-    subtitle: '10 de Mayo 08:17',
-    price: '$4000'
-  },
-  {
-    name: 'Juan David Angarita',
-    icon: 'av-timer',
-    subtitle: '10 de Mayo 09:30',
-    price: '$3000'
-  },
-  {
-    name: 'Carlos José Gonzalez',
-    icon: 'flight-takeoff',
-    subtitle: '10 de Mayo 08:17',
-    price: '$4000'
-  }
-];
 
 keyExtractor = (item, index) => index.toString();
 
@@ -170,8 +107,12 @@ class Home extends Component {
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     this.drawer.closeDrawer();
-    this.requestLocationPermission().then( () => {
-      this.props.setGPS();
+
+    this.props.showLoading();
+    this.props.setRides().then(() => {
+      this.requestLocationPermission().then( () => {
+        this.props.setGPS();
+      });
     });
   }
 
@@ -201,9 +142,13 @@ class Home extends Component {
   renderItem = ({ item }) => (
     <ListItem
       title={item.name}
-      subtitle={item.subtitle}
-      leftIcon={{ name: item.icon, size: 38 }}
-      rightTitle={item.price}
+      subtitle={item.end ? item.end : 'En proceso'}
+      leftIcon={{ name: 'av-timer', size: 38 }}
+      rightTitle="$3000"
+      containerStyle={{backgroundColor: item.end ? null : '#d4edda'}}
+      titleStyle={{fontWeight: "bold"}}
+      subtitleStyle={{color: item.end ? null : '#155724'}}
+      chevron
     />
   );
 
@@ -317,7 +262,7 @@ class Home extends Component {
           />
           <FlatList
             keyExtractor={this.keyExtractor}
-            data={list}
+            data={this.props.base.rides}
             renderItem={this.renderItem}
           />
         </NavigationDrawerLayout>
@@ -334,7 +279,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  location: state.location
+  location: state.location,
+  base: state.base
 });
 
 export default connect(mapStateToProps, {
@@ -343,5 +289,6 @@ export default connect(mapStateToProps, {
   logout, 
   showLoading, 
   stopWorking, 
-  startWorking
+  startWorking,
+  setRides
 }) (withNavigation(Home));
