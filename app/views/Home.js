@@ -7,7 +7,8 @@ import {
   Dimensions,
   StatusBar,
   PermissionsAndroid,
-  FlatList
+  FlatList,
+  BackHandler
 } from 'react-native';
 import { Input, Button, Icon, Header, ListItem, SearchBar } from 'react-native-elements';
 import Geolocation from 'react-native-geolocation-service';
@@ -139,15 +140,21 @@ class Home extends Component {
   }
 
   componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
     OneSignal.removeEventListener('received', this.onReceived);
     OneSignal.removeEventListener('opened', this.onOpened);
   }
 
   componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     this.drawer.closeDrawer();
     this.requestLocationPermission().then( () => {
       this.props.setGPS();
     });
+  }
+
+  handleBackButton() {
+    return true;
   }
 
   async requestLocationPermission() {
