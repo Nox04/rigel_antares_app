@@ -160,6 +160,10 @@ class Home extends Component {
     return true;
   }
 
+  viewDetails = id => {
+    this.props.navigation.navigate('DetailsPage', { id: id });
+  }
+
   async requestLocationPermission() {
     try {
       const granted = await PermissionsAndroid.requestMultiple([
@@ -188,6 +192,7 @@ class Home extends Component {
       containerStyle={{backgroundColor: item.end ? null : '#d4edda'}}
       titleStyle={{fontWeight: "bold"}}
       subtitleStyle={{color: item.end ? null : '#155724'}}
+      onPress={() => {this.viewDetails(item.id)}}
       chevron
     />
   );
