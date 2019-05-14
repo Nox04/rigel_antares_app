@@ -4,6 +4,7 @@ import {StyleSheet} from 'react-native';
 import {Provider} from 'react-redux';
 import store from './store';
 import Spinner from 'react-native-loading-spinner-overlay';
+import FlashMessage from "react-native-flash-message";
 
 import Login from './views/Login';
 import Home from './views/Home';
@@ -43,6 +44,12 @@ export default class App extends React.Component {
           overlayColor = {'rgba(0, 0, 0, 0.85)'}
         />
         <Navigation />
+        <FlashMessage 
+          position="top" 
+          animationDuration={300}
+          hideStatusBar={true}
+          icon="auto"
+        />
       </Provider>
     );
   };

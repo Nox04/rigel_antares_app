@@ -33,9 +33,30 @@ const getToken = async () => {
   }
 }
 
+const setWorking = async working => {
+  try {
+    await AsyncStorage.setItem('@working', working);
+  } catch (e) {
+    // saving error
+  }
+}
+
+const getWorking = async () => {
+  try {
+    const value = await AsyncStorage.getItem('@working');
+    console.log(value);
+    if(value !== null) {
+      return value;
+    }
+  } catch(e) {
+    // error reading value
+  }
+}
+
 export const checkLocal = () => async dispatch => {
 
   const token = await getToken();
+  const working = await getWorking();
   await axios({
     method: 'GET',
     url: `${BASE_URL}/mauth/user`,
@@ -44,6 +65,11 @@ export const checkLocal = () => async dispatch => {
     }
   })
   .then( ({data}) => {
+    if(working === 'working') {
+      dispatch({
+        type: START_WORKING
+      });
+    }
     dispatch({
       type: SET_TOKEN,
       payload: token
@@ -101,6 +127,7 @@ export const stopWorking = () => async dispatch => {
       id: store.getState().auth.user.id,
     }
   }).then(() => {
+      setWorking('');
       dispatch({
         type: STOP_WORKING
       });
@@ -126,6 +153,7 @@ export const startWorking = () => async dispatch => {
       id: store.getState().auth.user.id,
     }
   }).then(() => {
+      setWorking('working');
       dispatch({
         type: START_WORKING
       });

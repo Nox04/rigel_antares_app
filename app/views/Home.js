@@ -22,6 +22,7 @@ import OneSignal from 'react-native-onesignal';
 import { withNavigation } from 'react-navigation';
 import {BASE_URL} from '../config';
 import axios from 'axios';
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -87,14 +88,53 @@ class Home extends Component {
   }
 
   stopJourny = () => {
+    if(!this.props.auth.isWorking){
+      showMessage({
+        message: "Su jornada ya fue detenida",
+        type: "danger"
+      });
+      return;
+    }
+
     this.props.showLoading();
-    this.props.stopWorking().then(() => {});
+    this.props.stopWorking().then(() => {
+      if(!this.props.auth.isWorking) {
+        showMessage({
+          message: "Jornada detenida con éxito",
+          type: "success"
+        });
+      } else {
+        showMessage({
+          message: "Ocurrió un error de conectividad",
+          type: "danger"
+        });
+      }
+    });
   }
 
   startJourny = () => {
+    if(this.props.auth.isWorking){
+      showMessage({
+        message: "Su jornada ya fue iniciada",
+        type: "danger"
+      });
+      return;
+    }
+
     this.props.showLoading();
     this.props.startWorking().then(() => {
-      sendGPS();
+      if(this.props.auth.isWorking) {
+        showMessage({
+          message: "Jornada iniciada con éxito",
+          type: "success"
+        });
+        sendGPS();
+      } else {
+        showMessage({
+          message: "Ocurrió un error de conectividad",
+          type: "danger"
+        });
+      }
     });
   }
 
@@ -167,6 +207,8 @@ class Home extends Component {
         />
         <NavigationDrawerLayout
         percent={75}
+        statusBar="#ffffff"
+        statusBarTransparency={0.3}
         ref = {_drawer => this.drawer = _drawer}
         type={this.state.type}
         drawerPosition="left"
@@ -244,7 +286,11 @@ class Home extends Component {
             placement="left"
             leftComponent={{ icon: 'menu', color: '#5d59c3', size: 32, onPress: () =>{ this.drawer.openDrawer() }}}
             centerComponent={{ text: 'Historial de envíos', style: { color: '#707ba1', fontWeight: '900', fontSize: 24 } }}
-            rightComponent={{ icon: 'filter-list', color: '#5d59c3', size: 32 }}
+            rightComponent={{ 
+              icon: this.props.auth.isWorking ? 'location-on' : 'location-off', 
+              color: this.props.auth.isWorking ? 'green' : 'red', 
+              size: 32 
+            }}
             containerStyle={{
               backgroundColor: '#fff',
               justifyContent: 'space-around',

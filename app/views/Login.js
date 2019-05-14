@@ -13,6 +13,7 @@ import Colors from '../modules/Colors';
 import {connect} from 'react-redux';
 import {login, checkLocal} from '../actions/authActions';
 import {showLoading} from '../actions/baseActions';
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -130,8 +131,14 @@ class Login extends Component {
       phone: this.state.phone,
       pin: this.state.pin
     }).then(() => {
-      if(this.props.auth.isAuthenticated)
+      if(this.props.auth.isAuthenticated) {
         this.props.navigation.navigate('HomePage');
+      } else {
+        showMessage({
+          message: "Sus datos no son válidos.",
+          type: "danger",
+        });
+      }
     });
   }
 }
