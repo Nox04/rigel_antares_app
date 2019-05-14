@@ -31,6 +31,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 keyExtractor = (item, index) => index.toString();
 
 class Home extends Component {
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -51,7 +52,6 @@ class Home extends Component {
   }
 
   onOpened = openResult => {
-    console.log(openResult);
     if(openResult.action.actionID === '1') {
       axios({
         method: 'POST',
@@ -128,7 +128,7 @@ class Home extends Component {
           message: "Jornada iniciada con éxito",
           type: "success"
         });
-        sendGPS();
+        sendGPS(this.props.location.latitude, this.props.location.longitude);
       } else {
         showMessage({
           message: "Ocurrió un error de conectividad",
@@ -311,6 +311,7 @@ class Home extends Component {
             data={this.props.base.rides}
             renderItem={this.renderItem}
           />
+          <Text>{this.props.location.latitude}-{this.props.location.longitude}</Text>
         </NavigationDrawerLayout>
       </View>
     );

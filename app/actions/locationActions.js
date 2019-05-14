@@ -10,7 +10,7 @@ import {
   SET_PERMISSION
 } from './types';
 
-export const sendGPS = async () => {
+export const sendGPS = async (latitude, longitude) => {
   await axios({
     method: 'POST',
     url: `${BASE_URL}/messengers/geo`,
@@ -19,8 +19,8 @@ export const sendGPS = async () => {
     },
     data: {
       id: store.getState().auth.user.id,
-      latitude: store.getState().location.latitude,
-      longitude: store.getState().location.longitude
+      latitude: latitude,
+      longitude: longitude
     }
   })
   .then( resp => {
@@ -42,9 +42,7 @@ export const setGPS = () => async dispatch => {
             longitude: position.coords.longitude
           }
         });
-        if(store.getState().auth.isWorking) {
-          sendGPS();
-        }
+        sendGPS(position.coords.latitude, position.coords.longitude);
       },
       (error) => {
         console.log(error.code, error.message);
