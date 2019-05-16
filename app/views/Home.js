@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Alert,
   StyleSheet,
   Text,
   View,
@@ -19,6 +20,7 @@ import { withNavigation } from 'react-navigation';
 import {BASE_URL} from '../config';
 import axios from 'axios';
 import { showMessage, hideMessage } from "react-native-flash-message";
+import BackgroundGeolocation from '@mauron85/react-native-background-geolocation';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -99,6 +101,7 @@ class Home extends Component {
           message: "Jornada detenida con éxito",
           type: "success"
         });
+        BackgroundGeolocation.stop();
       } else {
         showMessage({
           message: "Ocurrió un error de conectividad",
@@ -124,7 +127,11 @@ class Home extends Component {
           message: "Jornada iniciada con éxito",
           type: "success"
         });
-        sendGPS(this.props.location.latitude, this.props.location.longitude);
+        BackgroundGeolocation.checkStatus(status => {
+          if (!status.isRunning) {
+            BackgroundGeolocation.start(); //triggers start on start event
+          }
+        });
       } else {
         showMessage({
           message: "Ocurrió un error de conectividad",
@@ -135,6 +142,7 @@ class Home extends Component {
   }
 
   componentWillUnmount() {
+    BackgroundGeolocation.removeAllListeners();
     OneSignal.removeEventListener('received', this.onReceived);
     OneSignal.removeEventListener('opened', this.onOpened);
   }
@@ -142,16 +150,70 @@ class Home extends Component {
   componentDidMount() {
     this.drawer.closeDrawer();
 
+    BackgroundGeolocation.configure({
+      desiredAccuracy: BackgroundGeolocation.HIGH_ACCURACY,
+      stationaryRadius: 50,
+      distanceFilter: 200,
+      notificationTitle: 'Localización GPS',
+      notificationText: 'Activada',
+      debug: false,
+      startOnBoot: false,
+      stopOnTerminate: true,
+      locationProvider: BackgroundGeolocation.ACTIVITY_PROVIDER,
+      interval: 10000,
+      fastestInterval: 5000,
+      activitiesInterval: 10000,
+      stopOnStillActivity: false
+    });
+
+    BackgroundGeolocation.on('location', (location) => {
+      
+      BackgroundGeolocation.startTask(taskKey => {
+        sendGPS(location.latitude, location.longitude).then(() => {
+          BackgroundGeolocation.endTask(taskKey);
+        })
+      });
+    });
+
+    BackgroundGeolocation.on('stationary', (stationaryLocation) => {
+      // handle stationary locations here
+      Actions.sendLocation(stationaryLocation);
+    });
+
+    BackgroundGeolocation.on('error', (error) => {
+      console.log('[ERROR] BackgroundGeolocation error:', error);
+    });
+
+    BackgroundGeolocation.on('start', () => {
+      console.log('[INFO] BackgroundGeolocation service has been started');
+    });
+
+    BackgroundGeolocation.on('stop', () => {
+      console.log('[INFO] BackgroundGeolocation service has been stopped');
+    });
+
+    BackgroundGeolocation.on('authorization', (status) => {
+      console.log('[INFO] BackgroundGeolocation authorization status: ' + status);
+      if (status !== BackgroundGeolocation.AUTHORIZED) {
+        // we need to set delay or otherwise alert may not be shown
+        setTimeout(() =>
+          Alert.alert('La aplicación requiere permisos de GPS', '¿Quieres abrir la configuración?', [
+            { text: 'Sí', onPress: () => BackgroundGeolocation.showAppSettings() },
+            { text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel' }
+          ]), 1000);
+      }
+    });
+
     this.props.showLoading();
     this.props.setRides().then(() => {
       this.requestLocationPermission().then( () => {
-        this.props.setGPS();
+        BackgroundGeolocation.checkStatus(status => {
+          if (!status.isRunning) {
+            BackgroundGeolocation.start(); //triggers start on start event
+          }
+        });
       });
     });
-  }
-
-  handleBackButton() {
-    return true;
   }
 
   viewDetails = id => {

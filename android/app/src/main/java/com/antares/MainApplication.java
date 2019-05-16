@@ -14,6 +14,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
+import com.marianhello.bgloc.react.BackgroundGeolocationPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new BackgroundGeolocationPackage(),
             new ReactNativeOneSignalPackage(),
             new RNMaterialLetterIconPackage(),
             new TextToSpeechPackage(),

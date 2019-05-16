@@ -24,7 +24,6 @@ const AuthStack = createStackNavigator({
 });
 
 const MainNavigator = createSwitchNavigator({
-    //AuthLoading: AuthLoadingScreen,
     App: AppStack,
     Auth: AuthStack,
   },
