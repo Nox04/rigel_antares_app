@@ -26,8 +26,6 @@ import BackgroundGeolocation from '@mauron85/react-native-background-geolocation
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-keyExtractor = (item, index) => index.toString();
-
 class Home extends Component {
   
   constructor(props) {
@@ -120,7 +118,7 @@ class Home extends Component {
       return;
     }
 
-    this.props.showLoading();
+  this.props.showLoading();
     this.props.startWorking().then(() => {
       if(this.props.auth.isWorking) {
         showMessage({
@@ -129,7 +127,7 @@ class Home extends Component {
         });
         BackgroundGeolocation.checkStatus(status => {
           if (!status.isRunning) {
-            BackgroundGeolocation.start(); //triggers start on start event
+            BackgroundGeolocation.start();
           }
         });
       } else {
@@ -254,8 +252,19 @@ class Home extends Component {
     />
   );
 
-  updateSearch = search => {
-    this.setState({ search });
+  keyExtractor = (item, index) => index.toString();
+
+  updateSearch = text => {
+    const newData = this.arrayholder.filter(item => {      
+      const itemData = `${item.name.title.toUpperCase()}   
+      ${item.name.first.toUpperCase()} ${item.name.last.toUpperCase()}`;
+  
+       const textData = text.toUpperCase();
+        
+       return itemData.indexOf(textData) > -1;    
+    });    
+  
+    this.setState({ data: newData });
   };
 
   render() {
@@ -367,6 +376,7 @@ class Home extends Component {
             placeholder="Buscar..."
             onChangeText={this.updateSearch}
             value={search}
+            autoCorrect={false}
           />
           <FlatList
             keyExtractor={this.keyExtractor}
