@@ -206,11 +206,6 @@ class Home extends Component {
     this.props.showLoading();
     this.props.setRides().then(() => {
       this.requestLocationPermission().then( () => {
-        BackgroundGeolocation.checkStatus(status => {
-          if (!status.isRunning) {
-            BackgroundGeolocation.start(); //triggers start on start event
-          }
-        });
       });
     });
   }
