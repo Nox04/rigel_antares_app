@@ -167,12 +167,13 @@ class Home extends Component {
     });
 
     BackgroundGeolocation.on('location', (location) => {
-      
-      BackgroundGeolocation.startTask(taskKey => {
-        sendGPS(location.latitude, location.longitude).then(() => {
-          BackgroundGeolocation.endTask(taskKey);
-        })
-      });
+      if(this.props.auth.isWorking) {
+        BackgroundGeolocation.startTask(taskKey => {
+          sendGPS(location.latitude, location.longitude).then(() => {
+            BackgroundGeolocation.endTask(taskKey);
+          })
+        });
+      }
     });
 
     BackgroundGeolocation.on('stationary', (stationaryLocation) => {
