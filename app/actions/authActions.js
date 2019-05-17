@@ -44,7 +44,6 @@ const setWorking = async working => {
 const getWorking = async () => {
   try {
     const value = await AsyncStorage.getItem('@working');
-    console.log(value);
     if(value !== null) {
       return value;
     }
@@ -54,7 +53,6 @@ const getWorking = async () => {
 }
 
 export const checkLocal = () => async dispatch => {
-
   const token = await getToken();
   const working = await getWorking();
   await axios({
