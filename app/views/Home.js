@@ -36,6 +36,8 @@ class Home extends Component {
       type: ''
     }
 
+    this.subs = [];
+
     OneSignal.init("1a399796-8b22-44bc-828e-22ac3d91966a");
     OneSignal.inFocusDisplaying(0);
     OneSignal.enableVibrate(true);
@@ -45,6 +47,7 @@ class Home extends Component {
     OneSignal.addEventListener('received', this.onReceived);
     OneSignal.addEventListener('opened', this.onOpened);
     OneSignal.configure();
+
   }
 
   onOpened = openResult => {
@@ -139,13 +142,27 @@ class Home extends Component {
     });
   }
 
+  componentDidFocus = () => {
+    this.props.setRides().then(() => {
+    });
+  }
+
   componentWillUnmount() {
     BackgroundGeolocation.removeAllListeners();
+    this.subs.forEach(sub => sub.remove());
     OneSignal.removeEventListener('received', this.onReceived);
     OneSignal.removeEventListener('opened', this.onOpened);
   }
 
   componentDidMount() {
+    this.props.showLoading();
+    this.requestLocationPermission().then( () => {
+    });
+
+    this.subs = [
+      this.props.navigation.addListener('didFocus', this.componentDidFocus)
+    ];
+
     this.drawer.closeDrawer();
 
     BackgroundGeolocation.configure({
@@ -201,12 +218,6 @@ class Home extends Component {
             { text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel' }
           ]), 1000);
       }
-    });
-
-    this.props.showLoading();
-    this.props.setRides().then(() => {
-      this.requestLocationPermission().then( () => {
-      });
     });
   }
 

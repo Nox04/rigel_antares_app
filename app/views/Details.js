@@ -16,6 +16,7 @@ import {showLoading, hideLoading} from '../actions/baseActions';
 import axios from 'axios';
 import {BASE_URL} from '../config';
 import ButtonsBar from '../components/ButtonsBar';
+import { showMessage } from "react-native-flash-message";
 
 class Details extends Component {
   constructor(props) {
@@ -31,18 +32,21 @@ class Details extends Component {
       name: null,
       phone: null,
       status: null,
+      rideId: null
     }
   }
 
   componentDidMount() {
     this.props.showLoading();
+    this.setState({
+      rideId: this.props.navigation.getParam('id', '0')
+    });
     this.requestRide().then(() => {
 
     });
   }
 
   async requestRide() {
-    const rideId = this.props.navigation.getParam('id', '0');
     await axios({
       method: 'POST',
       url: `${BASE_URL}/rides/my-ride`,
@@ -50,7 +54,7 @@ class Details extends Component {
         'Authorization':`Bearer ${this.props.auth.token}`
       },
       data: {
-        id: rideId
+        id: this.state.rideId
       }
     }).then(({data}) => {
         this.setState({
@@ -76,7 +80,30 @@ class Details extends Component {
   keyExtractor = (item, index) => index.toString();
 
   finishRide = () => {
-    console.log('finish');
+    axios({
+      method: 'POST',
+      url: `${BASE_URL}/rides/finish`,
+      headers: {
+        'Authorization':`Bearer ${this.props.auth.token}`
+      },
+      data: {
+        id: this.state.rideId
+      }
+    }).then(({data}) => {
+        this.setState({
+          status: 'finished'
+        });
+        showMessage({
+          message: "Domicilio finalizado",
+          type: "success"
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .then(() => {
+        this.props.hideLoading();
+      });
   }
 
   renderItem = ({ item }) => (
