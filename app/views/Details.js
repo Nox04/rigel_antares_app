@@ -28,7 +28,7 @@ class Details extends Component {
       ],
       name: null,
       phone: null,
-      status: null,
+      status: 'finished',
       rideId: null
     }
   }
