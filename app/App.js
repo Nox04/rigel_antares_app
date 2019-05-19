@@ -5,6 +5,7 @@ import {Provider} from 'react-redux';
 import store from './store';
 import Spinner from 'react-native-loading-spinner-overlay';
 import FlashMessage from "react-native-flash-message";
+import SplashScreen from 'react-native-splash-screen';
 
 import Login from './views/Login';
 import Home from './views/Home';
@@ -46,6 +47,7 @@ export default class App extends React.Component {
     store.subscribe(() => {
       this.setState({isLoading: store.getState().base.isLoading});
     });
+    SplashScreen.hide();
   }
 
   render() {

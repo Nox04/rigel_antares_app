@@ -3,6 +3,7 @@ package com.antares;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.geektime.rnonesignalandroid.ReactNativeOneSignalPackage;
 import com.zappi.ui.material.letter.icon.RNMaterialLetterIconPackage;
 import net.no_mad.tts.TextToSpeechPackage;
@@ -31,6 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SplashScreenReactPackage(),
             new BackgroundGeolocationPackage(),
             new ReactNativeOneSignalPackage(),
             new RNMaterialLetterIconPackage(),
