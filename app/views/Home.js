@@ -21,6 +21,7 @@ import {BASE_URL} from '../config';
 import axios from 'axios';
 import { showMessage, hideMessage } from "react-native-flash-message";
 import BackgroundGeolocation from '@mauron85/react-native-background-geolocation';
+import { StackActions } from 'react-navigation';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -51,6 +52,7 @@ class Home extends Component {
   }
 
   onOpened = openResult => {
+    console.log(openResult);
     if(openResult.action.actionID === '1') {
       axios({
         method: 'POST',
@@ -64,16 +66,21 @@ class Home extends Component {
         }
       })
       .then( resp => {
-        console.log(resp);
+        this.viewDetails(openResult.notification.payload.additionalData.ride_id);
       })
       .catch( error => {
-        console.log(error);
+        showMessage({
+          message: "Este domicilio ya fue tomado",
+          type: "danger"
+        });
       });
+    } else if (openResult.action.actionID === '2') {
+      this.props.navigation.dispatch(StackActions.pop());
     }
   }
 
-  onReceived = () => {
-    this.props.navigation.navigate('NewRidePage');
+  onReceived = notification => {
+    this.props.navigation.navigate('NewRidePage', { id: notification.payload.additionalData.ride_id });
   }
 
   logout = () => {

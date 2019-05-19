@@ -17,6 +17,7 @@ import axios from 'axios';
 import {BASE_URL} from '../config';
 import ButtonsBar from '../components/ButtonsBar';
 import { showMessage } from "react-native-flash-message";
+import { StackActions } from 'react-navigation';
 
 class Details extends Component {
   constructor(props) {
@@ -40,9 +41,8 @@ class Details extends Component {
     this.props.showLoading();
     this.setState({
       rideId: this.props.navigation.getParam('id', '0')
-    });
-    this.requestRide().then(() => {
-
+    }, () => {
+      this.requestRide();
     });
   }
 
@@ -97,6 +97,7 @@ class Details extends Component {
           message: "Domicilio finalizado",
           type: "success"
         });
+        this.props.navigation.dispatch(StackActions.popToTop())
       })
       .catch(error => {
         console.log(error);
