@@ -378,7 +378,6 @@ class Home extends Component {
             data={this.props.base.rides}
             renderItem={this.renderItem}
           />
-          <Text>{this.props.location.latitude}-{this.props.location.longitude}</Text>
         </NavigationDrawerLayout>
       </View>
     );

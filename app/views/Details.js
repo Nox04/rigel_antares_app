@@ -7,13 +7,15 @@ import {
   Dimensions,
   StatusBar,
   Image,
-  TouchableOpacity,
-  FlatList
+  FlatList,
 } from 'react-native';
 import { Input, Button, Icon, ListItem } from 'react-native-elements';
 import Colors from '../modules/Colors';
 import {connect} from 'react-redux';
-import BaseIcon from '../components/Icon';
+import {showLoading, hideLoading} from '../actions/baseActions';
+import axios from 'axios';
+import {BASE_URL} from '../config';
+import ButtonsBar from '../components/ButtonsBar';
 
 class Details extends Component {
   constructor(props) {
@@ -21,24 +23,68 @@ class Details extends Component {
 
     this.state = {
       info: [
-        {name: 'Dirección de salida', end: 'Calle 6 Bis # 23 - 44', icon: 'location-on'}, 
-        {name: 'Dirección de llegada', end: 'Carrera 10 # 16B - 55', icon: 'location-on'},
-        {name: 'Barrio', end: 'La nueva esperanza', icon: 'map'},
-        {name: 'Detalles adicionales', end: 'Buscar un trabajo de física que está en la habitación de su casa y llevarlo a portería por la entrada número dos. Además, buscar un trabajo de física que está en la habitación de su casa y llevarlo a portería por la entrada número dos.', icon: 'details'},
-      ]
+        {name: 'Dirección de salida', data: '', icon: 'location-on'}, 
+        {name: 'Dirección de llegada', data: '', icon: 'location-on'},
+        {name: 'Barrio', data: '', icon: 'map'},
+        {name: 'Detalles adicionales', data: '', icon: 'details'},
+      ],
+      name: null,
+      phone: null,
+      status: null,
     }
   }
 
+  componentDidMount() {
+    this.props.showLoading();
+    this.requestRide().then(() => {
+
+    });
+  }
+
+  async requestRide() {
+    const rideId = this.props.navigation.getParam('id', '0');
+    await axios({
+      method: 'POST',
+      url: `${BASE_URL}/rides/my-ride`,
+      headers: {
+        'Authorization':`Bearer ${this.props.auth.token}`
+      },
+      data: {
+        id: rideId
+      }
+    }).then(({data}) => {
+        this.setState({
+          info: [
+            {...this.state.info[0], data: data.address},
+            {...this.state.info[1], data: data.address2},
+            {...this.state.info[2], data: data.neighborhood},
+            {...this.state.info[3], data: data.details}
+          ],
+          name: data.name,
+          phone: data.phone,
+          status: data.status
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .then(() => {
+        this.props.hideLoading();
+      });
+  };
+
   keyExtractor = (item, index) => index.toString();
+
+  finishRide = () => {
+    console.log('finish');
+  }
 
   renderItem = ({ item }) => (
     <ListItem
       title={item.name}
-      subtitle={item.end ? item.end : 'En proceso'}
+      subtitle={item.data ? item.data : 'Sin detalles'}
       leftIcon={{ name: item.icon, size: 38 }}
-      containerStyle={{backgroundColor: item.end ? null : '#d4edda'}}
       titleStyle={{fontWeight: "bold"}}
-      subtitleStyle={{color: item.end ? null : '#155724'}}
     />
   );
 
@@ -50,10 +96,10 @@ class Details extends Component {
           barStyle="light-content"
         />
         <View style={styles.header}></View>
-        <Image style={styles.avatar} source={{uri: 'https://pps.whatsapp.net/v/t61.24694-24/57883156_2271929879567087_8091423033647955968_n.jpg?oe=5CE1E64B&oh=cfd5a29530627fd73902b7a25cf7b97e'}}/>
+        <Image style={styles.avatar} source={require('../assets/images/user.jpg')}/>
 
         <View style={styles.bodyContent}>
-          <Text style={styles.name}>Beimer Osorio</Text>        
+          <Text style={styles.name}>{this.state.name}</Text>        
         </View>
         <FlatList
           keyExtractor={this.keyExtractor}
@@ -61,18 +107,7 @@ class Details extends Component {
           renderItem={this.renderItem}
         />
         <View style={styles.footerContent}>
-          <View>
-            <TouchableOpacity style={styles.buttonContainer}>
-              <Icon name='local-phone' color='white' />
-              <Text style={styles.finishButton}>Llamar</Text>  
-            </TouchableOpacity>  
-          </View>
-          <View>
-            <TouchableOpacity style={styles.buttonContainer}>
-              <Icon name='exit-to-app' color='white' />
-              <Text style={styles.finishButton}>Finalizar orden</Text>  
-            </TouchableOpacity>
-          </View>
+          {this.state.status !== 'finished' ? <ButtonsBar phone={this.state.phone} finish={this.finishRide} /> : null}
         </View>
       </View>
     );
@@ -115,32 +150,11 @@ const styles = StyleSheet.create({
     color: "#00BFFF",
     marginTop:10
   },
-  footerContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row'
-  },
   description:{
     fontSize:16,
     color: "#696969",
     marginTop:10,
     textAlign: 'center'
-  },
-  buttonContainer: {
-    marginTop:10,
-    height:60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom:20,
-    minWidth: '40%',
-    borderRadius:8,
-    backgroundColor: "#8dc63f",
-    marginLeft: '5%'
-  },
-  finishButton: {
-    color: 'white',
-    fontSize:16,
-    fontWeight: "500"
   },
 
   listItemContainer: {
@@ -155,4 +169,4 @@ const mapStateToProps = state => ({
   auth: state.auth
 });
 
-export default connect(mapStateToProps) (Details);
+export default connect(mapStateToProps,{showLoading, hideLoading}) (Details);
