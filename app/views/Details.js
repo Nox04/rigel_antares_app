@@ -1,21 +1,17 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
-  ImageBackground,
-  Dimensions,
   StatusBar,
-  Image,
   FlatList,
 } from 'react-native';
-import { Input, Button, Icon, ListItem } from 'react-native-elements';
 import Colors from '../modules/Colors';
 import {connect} from 'react-redux';
 import {showLoading, hideLoading} from '../actions/baseActions';
 import axios from 'axios';
 import {BASE_URL} from '../config';
 import ButtonsBar from '../components/ButtonsBar';
+import RideInfo from '../components/RideInfo';
 import { showMessage } from "react-native-flash-message";
 import { StackActions } from 'react-navigation';
 
@@ -77,8 +73,6 @@ class Details extends Component {
       });
   };
 
-  keyExtractor = (item, index) => index.toString();
-
   finishRide = () => {
     axios({
       method: 'POST',
@@ -107,15 +101,6 @@ class Details extends Component {
       });
   }
 
-  renderItem = ({ item }) => (
-    <ListItem
-      title={item.name}
-      subtitle={item.data ? item.data : 'Sin detalles'}
-      leftIcon={{ name: item.icon, size: 38 }}
-      titleStyle={{fontWeight: "bold"}}
-    />
-  );
-
   render() {
     return (
       <View style={styles.container}>
@@ -124,17 +109,8 @@ class Details extends Component {
           barStyle="light-content"
         />
         <View style={styles.header}></View>
-        <Image style={styles.avatar} source={require('../assets/images/user.jpg')}/>
-
-        <View style={styles.bodyContent}>
-          <Text style={styles.name}>{this.state.name}</Text>        
-        </View>
-        <FlatList
-          keyExtractor={this.keyExtractor}
-          data={this.state.info}
-          renderItem={this.renderItem}
-        />
-        <View style={styles.footerContent}>
+        <RideInfo info={this.state.info} name={this.state.name} />
+        <View style={styles.buttons} >
           {this.state.status !== 'finished' ? <ButtonsBar phone={this.state.phone} finish={this.finishRide} /> : null}
         </View>
       </View>
@@ -150,46 +126,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#5d59c3",
     height:'20%'
   },
-  avatar: {
-    width: 180,
-    height: 180,
-    borderRadius: 100,
-    borderWidth: 4,
-    borderColor: "white",
-    alignSelf:'center',
-    marginTop:'-23%'
+  buttons:{
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    marginBottom: 10
   },
-  name:{
-    fontSize:22,
-    color:"#FFFFFF",
-    fontWeight:'600'
-  },
-  bodyContent: {
-    alignItems: 'center',
-    marginTop:'1%'
-  },
-  name:{
-    fontSize:28,
-    color: "#706eca",
-    fontWeight: "600"
-  },
-  info:{
-    fontSize:16,
-    color: "#00BFFF",
-    marginTop:10
-  },
-  description:{
-    fontSize:16,
-    color: "#696969",
-    marginTop:10,
-    textAlign: 'center'
-  },
-
-  listItemContainer: {
-    height: 55,
-    borderWidth: 0.5,
-    borderColor: '#ECECEC'
-  }
 });
 
 

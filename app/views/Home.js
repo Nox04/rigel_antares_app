@@ -66,6 +66,7 @@ class Home extends Component {
         }
       })
       .then( resp => {
+        this.props.navigation.dispatch(StackActions.pop());
         this.viewDetails(openResult.notification.payload.additionalData.ride_id);
       })
       .catch( error => {
@@ -226,6 +227,13 @@ class Home extends Component {
           ]), 1000);
       }
     });
+    if(this.props.auth.isWorking) {
+      BackgroundGeolocation.checkStatus(status => {
+        if (!status.isRunning) {
+          BackgroundGeolocation.start();
+        }
+      });
+    }
   }
 
   viewDetails = id => {
