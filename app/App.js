@@ -1,6 +1,6 @@
 import {createStackNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation';
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, StatusBar} from 'react-native';
 import {Provider} from 'react-redux';
 import store from './store';
 import Spinner from 'react-native-loading-spinner-overlay';

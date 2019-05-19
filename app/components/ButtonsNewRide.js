@@ -8,27 +8,29 @@ import {
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 
-export default class ButtonsBar extends Component {
+export default class ButtonsNewRide extends Component {
 
-  handleFinish = () => {
-    this.props.finish();
+  handleAccept = () => {
+    this.props.accept();
+  }
+
+  handleReject = () => {
+    this.props.reject();
   }
 
   render() {
     return (
       <View style={styles.footerContent}>
         <View>
-          <TouchableOpacity style={styles.buttonContainer} 
-            onPress={() => {Linking.openURL(`tel:${this.props.phone}`)}}
-          >
+          <TouchableOpacity style={styles.buttonContainer} onPress={this.handleReject}>
             <Icon name='local-phone' color='white' />
-            <Text style={styles.finishButton}>Llamar</Text>  
+            <Text style={styles.finishButton}>Rechazar</Text>  
           </TouchableOpacity>  
         </View>
         <View>
-          <TouchableOpacity style={styles.buttonContainer} onPress={this.handleFinish}>
+          <TouchableOpacity style={styles.buttonContainer} onPress={this.handleAccept}>
             <Icon name='exit-to-app' color='white' />
-            <Text style={styles.finishButton}>Finalizar orden</Text>  
+            <Text style={styles.finishButton}>Aceptar</Text>  
           </TouchableOpacity>
         </View>
       </View>

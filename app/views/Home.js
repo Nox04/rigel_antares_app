@@ -52,7 +52,6 @@ class Home extends Component {
   }
 
   onOpened = openResult => {
-    console.log(openResult);
     if(openResult.action.actionID === '1') {
       axios({
         method: 'POST',
@@ -81,6 +80,9 @@ class Home extends Component {
   }
 
   onReceived = notification => {
+    setTimeout(() =>{
+      OneSignal.clearOneSignalNotifications();
+    }, 20000);
     this.props.navigation.navigate('NewRidePage', { id: notification.payload.additionalData.ride_id });
   }
 
