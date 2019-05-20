@@ -21,7 +21,6 @@ import axios from 'axios';
 import { showMessage, hideMessage } from "react-native-flash-message";
 import BackgroundGeolocation from '@mauron85/react-native-background-geolocation';
 import { StackActions } from 'react-navigation';
-import Moment from 'react-moment';
 
 class Home extends Component {
   
