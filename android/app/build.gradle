@@ -153,16 +153,12 @@ dependencies {
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-onesignal')
     implementation project(':react-native-material-letter-icon')
-    implementation project(':react-native-tts')
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-vector-icons')
     compile project(':@mauron85_react-native-background-geolocation')
     implementation 'com.google.firebase:firebase-core:16.0.4'
     implementation 'com.google.firebase:firebase-messaging:17.3.3'
-    compile(project(':react-native-geolocation-service')) {
-        exclude group: 'com.google.android.gms', module: 'play-services-location'
-    }
     compile 'com.google.android.gms:play-services-location:16.0.0'
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"

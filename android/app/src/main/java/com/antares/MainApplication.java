@@ -6,7 +6,6 @@ import com.facebook.react.ReactApplication;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.geektime.rnonesignalandroid.ReactNativeOneSignalPackage;
 import com.zappi.ui.material.letter.icon.RNMaterialLetterIconPackage;
-import net.no_mad.tts.TextToSpeechPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -14,7 +13,6 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import com.marianhello.bgloc.react.BackgroundGeolocationPackage;
 
 import java.util.Arrays;
@@ -36,11 +34,9 @@ public class MainApplication extends Application implements ReactApplication {
             new BackgroundGeolocationPackage(),
             new ReactNativeOneSignalPackage(),
             new RNMaterialLetterIconPackage(),
-            new TextToSpeechPackage(),
             new AsyncStoragePackage(),
             new RNGestureHandlerPackage(),
-            new VectorIconsPackage(),
-            new RNFusedLocationPackage()
+            new VectorIconsPackage()
       );
     }
 

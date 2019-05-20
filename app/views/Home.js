@@ -260,7 +260,7 @@ class Home extends Component {
   renderItem = ({ item }) => (
     <ListItem
       title={item.name}
-      subtitle={item.end ? <Moment>{item.end}</Moment> : 'En proceso'}
+      subtitle={item.end ? item.end : 'En proceso'}
       leftIcon={{ name: 'av-timer', size: 38 }}
       rightTitle="$3000"
       containerStyle={{backgroundColor: item.end ? null : '#d4edda'}}

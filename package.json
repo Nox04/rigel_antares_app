@@ -14,7 +14,6 @@
     "react-native": "0.59.5",
     "react-native-elements": "^1.1.0",
     "react-native-flash-message": "^0.1.12",
-    "react-native-geolocation-service": "^2.0.1",
     "react-native-gesture-handler": "^1.2.1",
     "react-native-loading-spinner-overlay": "^1.0.1",
     "react-native-navigation-drawer-layout": "0.0.6",
