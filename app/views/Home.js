@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Dimensions,
   StatusBar,
   PermissionsAndroid,
   FlatList
@@ -22,10 +21,7 @@ import axios from 'axios';
 import { showMessage, hideMessage } from "react-native-flash-message";
 import BackgroundGeolocation from '@mauron85/react-native-background-geolocation';
 import { StackActions } from 'react-navigation';
-
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
+import Moment from 'react-moment';
 
 class Home extends Component {
   
@@ -264,7 +260,7 @@ class Home extends Component {
   renderItem = ({ item }) => (
     <ListItem
       title={item.name}
-      subtitle={item.end ? item.end : 'En proceso'}
+      subtitle={item.end ? <Moment>{item.end}</Moment> : 'En proceso'}
       leftIcon={{ name: 'av-timer', size: 38 }}
       rightTitle="$3000"
       containerStyle={{backgroundColor: item.end ? null : '#d4edda'}}
