@@ -22,14 +22,14 @@ export default class ButtonsNewRide extends Component {
     return (
       <View style={styles.footerContent}>
         <View>
-          <TouchableOpacity style={styles.buttonContainer} onPress={this.handleReject}>
-            <Icon name='local-phone' color='white' />
+          <TouchableOpacity style={styles.buttonContainerCancel} onPress={this.handleReject}>
+            <Icon name='close' color='white' />
             <Text style={styles.finishButton}>Rechazar</Text>  
           </TouchableOpacity>  
         </View>
         <View>
-          <TouchableOpacity style={styles.buttonContainer} onPress={this.handleAccept}>
-            <Icon name='exit-to-app' color='white' />
+          <TouchableOpacity style={styles.buttonContainerAccept} onPress={this.handleAccept}>
+            <Icon name='check' color='white' />
             <Text style={styles.finishButton}>Aceptar</Text>  
           </TouchableOpacity>
         </View>
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row'
   },
-  buttonContainer: {
+  buttonContainerAccept: {
     marginTop:10,
     height:60,
     justifyContent: 'center',
@@ -53,6 +53,17 @@ const styles = StyleSheet.create({
     minWidth: '40%',
     borderRadius:8,
     backgroundColor: "#8dc63f",
+    marginLeft: '5%'
+  },
+  buttonContainerCancel: {
+    marginTop:10,
+    height:60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom:20,
+    minWidth: '40%',
+    borderRadius:8,
+    backgroundColor: "#ff4e45",
     marginLeft: '5%'
   },
   finishButton: {

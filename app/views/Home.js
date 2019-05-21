@@ -43,7 +43,6 @@ class Home extends Component {
     OneSignal.addEventListener('received', this.onReceived);
     OneSignal.addEventListener('opened', this.onOpened);
     OneSignal.configure();
-
   }
 
   onOpened = openResult => {

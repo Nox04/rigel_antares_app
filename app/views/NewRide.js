@@ -14,6 +14,7 @@ import ButtonsNewRide from '../components/ButtonsNewRide';
 import RideInfo from '../components/RideInfo';
 import { showMessage } from "react-native-flash-message";
 import { StackActions } from 'react-navigation';
+import ProgressBarAnimated from 'react-native-progress-bar-animated';
 
 class NewRide extends Component {
   constructor(props) {
