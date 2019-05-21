@@ -14,7 +14,7 @@ import ButtonsNewRide from '../components/ButtonsNewRide';
 import RideInfo from '../components/RideInfo';
 import { showMessage } from "react-native-flash-message";
 import { StackActions } from 'react-navigation';
-import ProgressBarAnimated from 'react-native-progress-bar-animated';
+import CountdownCircle from 'react-native-countdown-circle'
 
 class NewRide extends Component {
   constructor(props) {
@@ -109,7 +109,18 @@ class NewRide extends Component {
           backgroundColor="#5d59c3"
           barStyle="light-content"
         />
-        <View style={styles.header}></View>
+        <View style={styles.header}>
+          <CountdownCircle
+              seconds={20}
+              radius={30}
+              borderWidth={8}
+              color="#8dc63f"
+              shadowColor="#fff"
+              bgColor="#fff"
+              textStyle={{ fontSize: 20 }}
+              onTimeElapsed={() => this.reject()}
+          />
+        </View>
         <RideInfo info={this.state.info} name={this.state.name} />
         <View style={styles.buttons} >
           {this.state.status !== 'finished' ? <ButtonsNewRide reject={this.reject} accept={this.accept} /> : null}
@@ -125,7 +136,9 @@ const styles = StyleSheet.create({
   },
   header:{
     backgroundColor: "#5d59c3",
-    height:'20%'
+    height:'20%',
+    paddingTop: 30,
+    paddingLeft: 20,
   },
   buttons:{
     flex: 1,
