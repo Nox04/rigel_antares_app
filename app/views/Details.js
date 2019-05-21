@@ -14,6 +14,7 @@ import ButtonsBar from '../components/ButtonsBar';
 import RideInfo from '../components/RideInfo';
 import { showMessage } from "react-native-flash-message";
 import { StackActions } from 'react-navigation';
+import moment from 'moment';
 
 class Details extends Component {
   constructor(props) {
@@ -64,6 +65,14 @@ class Details extends Component {
           phone: data.phone,
           status: data.status
         });
+        if(data.status === 'finished') {
+          const endDate = moment(data.end);
+          const createdAt = moment(data.created_at);
+          const diff = endDate.diff(createdAt, 'minutes');
+          this.setState({
+            info: [...this.state.info, {name: 'Tiempo de domicilio', data: `${diff} minutos`, icon: 'av-timer'}]
+          });
+        }
       })
       .catch(error => {
         console.log(error);
