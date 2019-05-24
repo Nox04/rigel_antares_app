@@ -1,14 +1,18 @@
 // types
-import {CLEAR_GPS, SET_GPS, SET_PERMISSION} from '../actions/types';
+import {
+  CLEAR_GPS,
+  SET_GPS,
+  SET_PERMISSION,
+} from '../actions/types';
 
 const preloadedState = {
   latitude: null,
   longitude: null,
-  hasLocationPermission: false
+  hasLocationPermission: false,
 };
 
-export default (state = preloadedState, {payload, type}) => {
-  switch(type) {
+export default (state = preloadedState, { payload, type }) => {
+  switch (type) {
     case CLEAR_GPS:
       return {
         ...state,
@@ -24,7 +28,7 @@ export default (state = preloadedState, {payload, type}) => {
     case SET_PERMISSION:
       return {
         ...state,
-        hasLocationPermission: payload
+        hasLocationPermission: payload,
       };
     default:
       return state;

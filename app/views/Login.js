@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   ImageBackground,
   Dimensions,
   StatusBar,
-  Image
 } from 'react-native';
 import { Input, Button, Icon } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { showMessage } from 'react-native-flash-message';
+import PropTypes from 'prop-types';
 import Colors from '../modules/Colors';
-import {connect} from 'react-redux';
-import {login, checkLocal} from '../actions/authActions';
-import {showLoading} from '../actions/baseActions';
-import { showMessage, hideMessage } from "react-native-flash-message";
+import { login, checkLocal } from '../actions/authActions';
+import { showLoading } from '../actions/baseActions';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -25,16 +24,41 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      phone:'',
-      pin:''
-    }
+      phone: '',
+      pin: '',
+    };
   }
 
   componentDidMount() {
-    this.props.showLoading();
-    this.props.checkLocal().then(() => {
-      if(this.props.auth.isAuthenticated) {
+    /* eslint-disable no-shadow */
+    const {
+      showLoading,
+      checkLocal,
+      auth,
+      navigation,
+    } = this.props;
+
+    showLoading();
+    checkLocal().then(() => {
+      if (auth.isAuthenticated) {
+        navigation.navigate('HomePage');
+      }
+    });
+  }
+
+  handleClick = () => {
+    const { phone, pin } = this.state;
+    this.props.login({
+      phone,
+      pin,
+    }).then(() => {
+      if (this.props.auth.isAuthenticated) {
         this.props.navigation.navigate('HomePage');
+      } else {
+        showMessage({
+          message: 'Sus datos no son válidos.',
+          type: 'danger',
+        });
       }
     });
   }
@@ -42,104 +66,87 @@ class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-      <StatusBar
-        backgroundColor={Colors.StatusBar.color}
-        barStyle="light-content"
-      />
+        <StatusBar
+          backgroundColor={Colors.StatusBar.color}
+          barStyle="light-content"
+        />
         <ImageBackground source={BG_IMAGE} style={styles.bgImage} resizeMode="cover">
           <View style={styles.loginView}>
             <View style={styles.loginTitle}>
-            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: 'row' }} />
             </View>
-          </View>
-          <View style={styles.loginInput}>
-            <Input
-              leftIcon={
-                <Icon
+            <View style={styles.loginInput}>
+              <Input
+                leftIcon={(
+                  <Icon
                     name="mobile"
                     type="font-awesome"
                     color={Colors.Textbox.icon}
                     size={25}
-                />
-              }
-              containerStyle={{ marginVertical: 10 }}
-              inputStyle={{ marginLeft: 10, color: Colors.Textbox.color }}
-              keyboardAppearance="light"
-              placeholder="Teléfono"
-              autoFocus={true}
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardType="phone-pad"
-              onSubmitEditing={() => { this.secondTextInput.focus(); }}
-              returnKeyType="next"
-              onChangeText = {value => this.setState({phone:value})}
-              maxLength={12}
-              blurOnSubmit={false}
-              placeholderTextColor={Colors.Textbox.color}
-              errorStyle={{ textAlign: 'center', fontSize: 12 }}
-            />
-            <Input
-              leftIcon={
-                <Icon
+                  />
+                )}
+                containerStyle={{ marginVertical: 10 }}
+                inputStyle={{ marginLeft: 10, color: Colors.Textbox.color }}
+                keyboardAppearance="light"
+                placeholder="Teléfono"
+                autoFocus
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="phone-pad"
+                onSubmitEditing={() => { this.secondTextInput.focus(); }}
+                returnKeyType="next"
+                onChangeText={value => this.setState({ phone: value })}
+                maxLength={12}
+                blurOnSubmit={false}
+                placeholderTextColor={Colors.Textbox.color}
+                errorStyle={{ textAlign: 'center', fontSize: 12 }}
+              />
+              <Input
+                leftIcon={(
+                  <Icon
                     name="lock"
                     type="font-awesome"
                     color={Colors.Textbox.icon}
                     size={25}
-                />
-              }
-              containerStyle={{ marginVertical: 10 }}
-              inputStyle={{ marginLeft: 10, color: Colors.Textbox.color }}
-              ref={(input) => { this.secondTextInput = input; }}
-              secureTextEntry={true}
-              keyboardAppearance="light"
-              placeholder="Contraseña"
-              autoCapitalize="none"
-              autoCorrect={false}
-              maxLength={4}
-              keyboardType="number-pad"
-              onChangeText = {value => this.setState({pin:value})}
-              returnKeyType="done"
-              blurOnSubmit={true}
-              placeholderTextColor={Colors.Textbox.color}
-            />
+                  />
+                )}
+                containerStyle={{ marginVertical: 10 }}
+                inputStyle={{ marginLeft: 10, color: Colors.Textbox.color }}
+                ref={(input) => { this.secondTextInput = input; }}
+                secureTextEntry
+                keyboardAppearance="light"
+                placeholder="Contraseña"
+                autoCapitalize="none"
+                autoCorrect={false}
+                maxLength={4}
+                keyboardType="number-pad"
+                onChangeText={value => this.setState({ pin: value })}
+                returnKeyType="done"
+                blurOnSubmit
+                placeholderTextColor={Colors.Textbox.color}
+              />
             </View>
             <Button
-            title="INICIAR SESIÓN"
-            activeOpacity={1}
-            underlayColor={Colors.Button.background}
-            buttonStyle={{
-              height: 50,
-              width: 250,
-              backgroundColor: Colors.Button.background,
-              borderWidth: 2,
-              borderColor: Colors.Button.border,
-              borderRadius: 30,
-            }}
-            containerStyle={{ marginVertical: 10 }}
-            titleStyle={{ fontWeight: 'bold', color: Colors.Button.text }}
-            onPress={(event) => this.handleClick(event)}
+              title="INICIAR SESIÓN"
+              activeOpacity={1}
+              underlayColor={Colors.Button.background}
+              buttonStyle={{
+                height: 50,
+                width: 250,
+                backgroundColor: Colors.Button.background,
+                borderWidth: 2,
+                borderColor: Colors.Button.border,
+                borderRadius: 30,
+              }}
+              containerStyle={{ marginVertical: 10 }}
+              titleStyle={{ fontWeight: 'bold', color: Colors.Button.text }}
+              onPress={this.handleClick}
             />
-            <View style={styles.footerView}>
-            </View>
+            <View style={styles.footerView} />
           </View>
         </ImageBackground>
       </View>
     );
-  }
-  handleClick(event) {
-    this.props.login({
-      phone: this.state.phone,
-      pin: this.state.pin
-    }).then(() => {
-      if(this.props.auth.isAuthenticated) {
-        this.props.navigation.navigate('HomePage');
-      } else {
-        showMessage({
-          message: "Sus datos no son válidos.",
-          type: "danger",
-        });
-      }
-    });
   }
 }
 
@@ -166,7 +173,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -100
+    marginTop: -100,
   },
   titleText: {
     color: Colors.Title.color,
@@ -187,7 +194,15 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
 });
 
-export default connect(mapStateToProps, {login, checkLocal, showLoading}) (Login);
+Login.propTypes = {
+  navigation: PropTypes.object,
+  auth: PropTypes.object,
+  checkLocal: PropTypes.func,
+  showLoading: PropTypes.func,
+  login: PropTypes.func,
+};
+
+export default connect(mapStateToProps, { login, checkLocal, showLoading })(Login);

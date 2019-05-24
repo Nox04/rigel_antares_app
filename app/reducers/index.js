@@ -8,5 +8,5 @@ import baseReducer from './baseReducer';
 export default combineReducers({
   auth: authReducer,
   base: baseReducer,
-  location: locationReducer
+  location: locationReducer,
 });

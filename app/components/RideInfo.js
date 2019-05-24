@@ -6,11 +6,10 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import { Input, Button, Icon, ListItem } from 'react-native-elements';
+import { ListItem } from 'react-native-elements';
+import PropTypes from 'prop-types';
 
-
-export default class Details extends Component {
-
+export default class RideInfo extends Component {
   keyExtractor = (item, index) => index.toString();
 
   renderItem = ({ item }) => (
@@ -18,21 +17,22 @@ export default class Details extends Component {
       title={item.name}
       subtitle={item.data ? item.data : 'Sin detalles'}
       leftIcon={{ name: item.icon, size: 38 }}
-      titleStyle={{fontWeight: "bold"}}
+      titleStyle={{ fontWeight: 'bold' }}
     />
   );
 
   render() {
+    const { name, info } = this.props;
     return (
       <View>
-        <Image style={styles.avatar} source={require('../assets/images/user.jpg')}/>
+        <Image style={styles.avatar} source={require('../assets/images/user.jpg')} />
 
         <View style={styles.bodyContent}>
-          <Text style={styles.name}>{this.props.name}</Text>        
+          <Text style={styles.name}>{name}</Text>
         </View>
         <FlatList
           keyExtractor={this.keyExtractor}
-          data={this.props.info}
+          data={info}
           renderItem={this.renderItem}
         />
       </View>
@@ -46,38 +46,38 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: 100,
     borderWidth: 4,
-    borderColor: "white",
-    alignSelf:'center',
-    marginTop:'-23%'
-  },
-  name:{
-    fontSize:22,
-    color:"#FFFFFF",
-    fontWeight:'600'
+    borderColor: 'white',
+    alignSelf: 'center',
+    marginTop: '-23%',
   },
   bodyContent: {
     alignItems: 'center',
-    marginTop:'1%'
+    marginTop: '1%',
   },
-  name:{
-    fontSize:28,
-    color: "#706eca",
-    fontWeight: "600"
+  name: {
+    fontSize: 28,
+    color: '#706eca',
+    fontWeight: '600',
   },
-  info:{
-    fontSize:16,
-    color: "#00BFFF",
-    marginTop:10
+  info: {
+    fontSize: 16,
+    color: '#00BFFF',
+    marginTop: 10,
   },
-  description:{
-    fontSize:16,
-    color: "#696969",
-    marginTop:10,
-    textAlign: 'center'
+  description: {
+    fontSize: 16,
+    color: '#696969',
+    marginTop: 10,
+    textAlign: 'center',
   },
   listItemContainer: {
     height: 55,
     borderWidth: 0.5,
-    borderColor: '#ECECEC'
-  }
+    borderColor: '#ECECEC',
+  },
 });
+
+RideInfo.propTypes = {
+  name: PropTypes.string,
+  info: PropTypes.array,
+};

@@ -1,27 +1,31 @@
 // types
-import {SHOW_LOADING, HIDE_LOADING, SET_RIDES} from '../actions/types';
+import {
+  SHOW_LOADING,
+  HIDE_LOADING,
+  SET_RIDES,
+} from '../actions/types';
 
 const preloadedState = {
   isLoading: false,
-  rides: []
+  rides: [],
 };
 
-export default (state = preloadedState, {type, payload}) => {
-  switch(type) {
+export default (state = preloadedState, { type, payload }) => {
+  switch (type) {
     case SHOW_LOADING:
       return {
         ...state,
-        isLoading: true
+        isLoading: true,
       };
     case HIDE_LOADING:
       return {
         ...state,
-        isLoading: false
+        isLoading: false,
       };
     case SET_RIDES:
       return {
         ...state,
-        rides: payload
+        rides: payload,
       };
     default:
       return state;
